@@ -29,11 +29,9 @@
       .print-doc th { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; }
       .print-doc .text-center { text-align: center; } .print-doc .text-right { text-align: right; }
       .print-doc h2 { text-align: center; font-size: 18px; margin-bottom: 5px; font-weight: bold; }
-      
       .sticker-row { border: 1px solid #000; padding: 5px; margin-bottom: 5px; font-size: 11px; page-break-inside: avoid; }
       .sticker-table { width: 100%; border-collapse: collapse; text-align: center; }
       .sticker-table th, .sticker-table td { border: 1px solid #000; padding: 2px 4px; }
-      
       .no-print { display: none !important; }
       .no-print-input { display: none !important; }
       .print-only-display { display: table-cell !important; }
@@ -109,6 +107,7 @@
     </aside>
 
     <main class="flex-1 flex flex-col h-screen min-w-0 bg-slate-50">
+      
       <header class="bg-white shadow-sm border-b px-4 md:px-6 py-3 flex justify-between items-center z-10 w-full">
          <div class="flex items-center space-x-3 w-full md:w-auto">
              <button onclick="toggleSidebar()" class="md:hidden text-slate-600 hover:text-green-700 focus:outline-none p-1">
@@ -484,83 +483,32 @@
             return await response.json();
         } catch (error) { 
             console.error("API Error:", error); 
-            alert("ไม่สามารถเชื่อมต่อฐานข้อมูลได้"); 
+            alert("ไม่สามารถเชื่อมต่อฐานข้อมูลได้ กรุณาลองใหม่อีกครั้ง"); 
             throw error; 
         }
     }
 
-    // --- ส่วนประมวลผล Auto Req (ดึงจาก API InventoryReport) ---
-    function loadAutoRequisition() {
-        let dept = getCurrentDept();
-        if(dept === 'ALL') return alert("กรุณาเลือกคลัง (OPD/IPD) ที่ต้องการสร้างใบเบิกด้านบนก่อนครับ");
-        document.getElementById('auto_req_dept_display').innerText = dept;
-        document.getElementById('reqTableBody').innerHTML = '<tr><td colspan="8" class="text-center p-10"><div class="loader"></div> กำลังสแกนคลังยา...</td></tr>';
-        
-        callAPI('getInventoryReport', {department: dept}).then(data => {
-            if(data.error) return alert("Error: " + data.message);
-            autoReqData = [];
-            data.forEach(d => {
-                let max = Number(d.Max); let min = Number(d.Min); let bal = Number(d.Balance); let pack = Number(d.Pack_Size);
-                if (max > 0 && bal < max && pack > 0) {
-                    let need = max - bal;
-                    let suggestPacks = Math.floor(need / pack); // ปัดเศษทิ้ง เอาแค่แพ็คเต็มที่ไม่ล้น Max
-                    
-                    // ถ้าของเหลือน้อยกว่า Min แต่ปัดเศษทิ้งแล้วเหลือ 0 ให้ปัดขึ้นเป็น 1 แพ็คเพื่อกันของขาด
-                    if (suggestPacks === 0 && bal <= min) { suggestPacks = 1; }
-
-                    if (suggestPacks > 0) {
-                        let suggestBase = suggestPacks * pack;
-                        autoReqData.push({ ...d, SuggestPacks: suggestPacks, SuggestBase: suggestBase, ReqQty: suggestBase });
-                    }
-                }
-            });
-            autoReqData.sort((a, b) => a.Balance - b.Balance); // เอาตัวเหลือน้อยขึ้นก่อน
-            renderAutoRequisition();
-        }).catch(err => {
-            document.getElementById('reqTableBody').innerHTML = '<tr><td colspan="8" class="text-center p-10 text-red-500">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
-        });
+    function checkDispenseBalance() {
+        const drugId = document.getElementById('disp_drug').value; 
+        document.getElementById('disp_current_balance').innerText = '...'; 
+        document.getElementById('disp_pack_size').value = ''; 
+        calculateDispQty(); 
+        if(!drugId) return; 
+        const drugInfo = allDrugsList.find(d => d.Drug_ID === drugId); 
+        if(drugInfo) { 
+            document.getElementById('disp_unit_label').innerText = drugInfo.Unit; 
+            document.getElementById('disp_unit_label2').innerText = drugInfo.Unit; 
+            document.getElementById('disp_pack_size').value = drugInfo.Pack_Size; 
+        } 
+        let dept = getCurrentDept() === 'ALL' ? currentUser.department : getCurrentDept(); 
+        document.getElementById('disp_dept_label').innerText = dept; 
+        callAPI('checkCurrentBalance', {drugId: drugId, department: dept}).then(balance => { 
+            document.getElementById('disp_current_balance').innerText = balance; 
+            if(balance <= 0) document.getElementById('disp_current_balance').classList.replace('text-slate-800', 'text-red-600'); 
+            else document.getElementById('disp_current_balance').classList.replace('text-red-600', 'text-slate-800'); 
+            calculateDispQty(); 
+        }); 
     }
-
-    function renderAutoRequisition() {
-        const tb = document.getElementById('reqTableBody'); tb.innerHTML = '';
-        if(autoReqData.length === 0) { tb.innerHTML = '<tr><td colspan="8" class="text-center p-10 text-teal-600 font-bold">🎉 ยอดเยี่ยม! สต๊อกยาเต็ม Max ทุกรายการ ไม่มีรายการต้องเบิก</td></tr>'; return; }
-        autoReqData.forEach((r, i) => {
-            let balClass = r.Balance <= r.Min ? 'text-red-600 font-black' : 'text-slate-800 font-bold';
-            let warnIcon = r.Balance <= r.Min ? '🚨' : '';
-            tb.innerHTML += `<tr class="border-b hover:bg-slate-50" id="req_row_${i}">
-                    <td class="p-3 text-xs text-slate-500 font-mono">${r.Drug_ID}</td>
-                    <td class="p-3 font-bold text-slate-800">${warnIcon} ${r.Drug_Name}</td>
-                    <td class="p-3 text-center ${balClass} text-lg">${r.Balance}</td>
-                    <td class="p-3 text-center text-xs font-medium text-slate-500">${r.Min} / ${r.Max}</td>
-                    <td class="p-3 text-center text-blue-700 font-bold bg-blue-50"><span class="block text-lg">${r.SuggestBase}</span><span class="text-xs text-slate-500 font-normal">(${r.SuggestPacks} แพ็ค)</span></td>
-                    <td class="p-3 text-center bg-teal-50 no-print-input border-x border-teal-100"><input type="number" step="${r.Pack_Size}" value="${r.ReqQty}" onchange="updateReqQty(${i}, this.value)" class="w-full text-center border-b-2 border-teal-400 bg-transparent py-1 font-black text-teal-800 text-lg outline-none"><span class="text-[10px] text-teal-600 block mt-1">บรรจุ ${r.Pack_Size}</span></td>
-                    <td class="p-3 text-center print-only-display hidden text-teal-800 font-black text-lg">${r.ReqQty}</td>
-                    <td class="p-3 text-center text-xs font-bold text-slate-600">${r.Unit}</td>
-                    <td class="p-3 text-center no-print"><button onclick="removeReqItem(${i})" class="text-red-400 hover:text-red-600 text-lg font-bold" title="ลบทิ้ง">✕</button></td>
-                </tr>`;
-        });
-    }
-
-    function updateReqQty(index, val) {
-        autoReqData[index].ReqQty = Number(val);
-        let row = document.getElementById(`req_row_${index}`);
-        if(row) row.querySelector('.print-only-display').innerText = val;
-    }
-
-    function removeReqItem(index) { autoReqData.splice(index, 1); renderAutoRequisition(); }
-
-    function printRequisition() {
-        if(autoReqData.length === 0) return alert("ไม่มีรายการขอเบิก");
-        const printArea = document.getElementById('printArea');
-        let d = new Date().toLocaleString('th-TH'); let dept = getCurrentDept() === 'ALL' ? 'รวมทุกคลัง' : getCurrentDept();
-        let html = `<div class="print-doc"><h2>ใบขอเบิกยา (Requisition Form)</h2><p class="text-center mb-4">หน่วยงานที่ขอเบิก: <strong>${dept}</strong> | ข้อมูล ณ วันที่: ${d}</p><style>.no-print { display: none !important; } .no-print-input { display: none !important; } .print-only-display { display: table-cell !important; }</style>`;
-        html += document.getElementById('reqTableExport').outerHTML;
-        html += `<div style="margin-top: 50px; display: flex; justify-content: space-between; font-size: 14px;"><div style="text-align: center;">ลงชื่อ.......................................................ผู้ขอเบิก<br><br>(.......................................................)</div><div style="text-align: center;">ลงชื่อ.......................................................ผู้จ่ายยา<br><br>(.......................................................)</div><div style="text-align: center;">ลงชื่อ.......................................................ผู้รับยา<br><br>(.......................................................)</div></div></div>`;
-        printArea.innerHTML = html; setTimeout(() => { window.print(); }, 300);
-    }
-
-    // --- ฟังก์ชันอื่นๆ ซ่อนอยู่ด้านล่าง (เรียกใช้ผ่าน callAPI ปกติ) ---
-    function checkDispenseBalance() { const drugId = document.getElementById('disp_drug').value; document.getElementById('disp_current_balance').innerText = '...'; document.getElementById('disp_pack_size').value = ''; calculateDispQty(); if(!drugId) return; const drugInfo = allDrugsList.find(d => d.Drug_ID === drugId); if(drugInfo) { document.getElementById('disp_unit_label').innerText = drugInfo.Unit; document.getElementById('disp_unit_label2').innerText = drugInfo.Unit; document.getElementById('disp_pack_size').value = drugInfo.Pack_Size; } let dept = getCurrentDept() === 'ALL' ? currentUser.department : getCurrentDept(); document.getElementById('disp_dept_label').innerText = dept; callAPI('checkCurrentBalance', {drugId: drugId, department: dept}).then(balance => { document.getElementById('disp_current_balance').innerText = balance; if(balance <= 0) document.getElementById('disp_current_balance').classList.replace('text-slate-800', 'text-red-600'); else document.getElementById('disp_current_balance').classList.replace('text-red-600', 'text-slate-800'); calculateDispQty(); }); }
     
     function submitDispenseForm(e) { 
         e.preventDefault(); 
@@ -576,18 +524,48 @@
             if(res.success) { document.getElementById('disp_qty_pack').value = ''; document.getElementById('disp_lot').value = ''; if(document.getElementById('disp_exp')._flatpickr) document.getElementById('disp_exp')._flatpickr.clear(); if(tomSelectDisp) tomSelectDisp.clear(); document.getElementById('disp_dest_text').value = ''; document.getElementById('disp_current_balance').innerText = '-'; document.getElementById('disp_pack_size').value = ''; document.getElementById('disp_total_base').innerText = '0'; document.getElementById('disp_unit_label').innerText = ''; document.getElementById('disp_unit_label2').innerText = ''; } 
         }); 
     }
+
+    function loadInventoryReport() { 
+        const tb = document.getElementById('invTableBody'); tb.innerHTML = '<tr><td colspan="6" class="text-center p-10"><div class="loader"></div> กำลังคำนวณ...</td></tr>'; 
+        callAPI('getInventoryReport', {department: getCurrentDept()}).then(data => { if(data.error) return alert("Error: " + data.message); invReportData = data; renderInventoryReport(); }); 
+    }
     
-    function loadInventoryReport() { const tb = document.getElementById('invTableBody'); tb.innerHTML = '<tr><td colspan="6" class="text-center p-10"><div class="loader"></div> กำลังคำนวณ...</td></tr>'; callAPI('getInventoryReport', {department: getCurrentDept()}).then(data => { if(data.error) return alert("Error: " + data.message); invReportData = data; renderInventoryReport(); }); }
+    function sortInvReport(col) { 
+        if (invSortCol === col) { invSortAsc = !invSortAsc; } else { invSortCol = col; invSortAsc = true; } 
+        ['Drug_ID', 'Drug_Name', 'Balance', 'Earliest_Exp'].forEach(c => { let el = document.getElementById(`sort_${c}`); if(el) el.innerText = ''; }); 
+        let iconEl = document.getElementById(`sort_${col}`); if(iconEl) iconEl.innerText = invSortAsc ? ' ▲' : ' ▼'; 
+        invReportData.sort((a, b) => { 
+            let valA = a[col]; let valB = b[col]; 
+            if (col === 'Balance') { valA = Number(valA); valB = Number(valB); } 
+            else if (col === 'Earliest_Exp') { if (!valA) return invSortAsc ? 1 : -1; if (!valB) return invSortAsc ? -1 : 1; valA = new Date(valA).getTime(); valB = new Date(valB).getTime(); } 
+            else { valA = String(valA).toLowerCase(); valB = String(valB).toLowerCase(); } 
+            if (valA < valB) return invSortAsc ? -1 : 1; if (valA > valB) return invSortAsc ? 1 : -1; return 0; 
+        }); 
+        renderInventoryReport(); 
+    }
     
-    function sortInvReport(col) { if (invSortCol === col) { invSortAsc = !invSortAsc; } else { invSortCol = col; invSortAsc = true; } ['Drug_ID', 'Drug_Name', 'Balance', 'Earliest_Exp'].forEach(c => { let el = document.getElementById(`sort_${c}`); if(el) el.innerText = ''; }); let iconEl = document.getElementById(`sort_${col}`); if(iconEl) iconEl.innerText = invSortAsc ? ' ▲' : ' ▼'; invReportData.sort((a, b) => { let valA = a[col]; let valB = b[col]; if (col === 'Balance') { valA = Number(valA); valB = Number(valB); } else if (col === 'Earliest_Exp') { if (!valA) return invSortAsc ? 1 : -1; if (!valB) return invSortAsc ? -1 : 1; valA = new Date(valA).getTime(); valB = new Date(valB).getTime(); } else { valA = String(valA).toLowerCase(); valB = String(valB).toLowerCase(); } if (valA < valB) return invSortAsc ? -1 : 1; if (valA > valB) return invSortAsc ? 1 : -1; return 0; }); renderInventoryReport(); }
+    function generateVirtualStockCard() { 
+        const drugId = document.getElementById('vc_drug').value, startDate = document.getElementById('vc_start_date').value, endDate = document.getElementById('vc_end_date').value; 
+        if(!drugId || !startDate || !endDate) return alert("กรุณาเลือกยาและระบุช่วงวันที่"); 
+        document.getElementById('vcTableBody').innerHTML = '<tr><td colspan="7" class="text-center p-10"><div class="loader"></div> กำลังคำนวณ...</td></tr>'; 
+        document.getElementById('btnExportVc').disabled = true; document.getElementById('btnPrintVc').disabled = true; 
+        callAPI('getStockCardRaw', {drugId: drugId, department: getCurrentDept()}).then(data => { if(data.error) return alert("Error: " + data.message); vcRawData = data; renderVirtualStockCard(); }); 
+    }
     
-    function generateVirtualStockCard() { const drugId = document.getElementById('vc_drug').value, startDate = document.getElementById('vc_start_date').value, endDate = document.getElementById('vc_end_date').value; if(!drugId || !startDate || !endDate) return alert("กรุณาเลือกยาและระบุช่วงวันที่"); document.getElementById('vcTableBody').innerHTML = '<tr><td colspan="7" class="text-center p-10"><div class="loader"></div> กำลังคำนวณ...</td></tr>'; document.getElementById('btnExportVc').disabled = true; document.getElementById('btnPrintVc').disabled = true; callAPI('getStockCardRaw', {drugId: drugId, department: getCurrentDept()}).then(data => { if(data.error) return alert("Error: " + data.message); vcRawData = data; renderVirtualStockCard(); }); }
+    function loadHistoryIn() { 
+        document.getElementById('historyInTableBody').innerHTML = '<tr><td colspan="8" class="text-center p-10"><div class="loader"></div> กำลังโหลด...</td></tr>'; 
+        callAPI('getTransactions', {department: getCurrentDept(), type: 'IN'}).then(data => { if(data.error) return document.getElementById('historyInTableBody').innerHTML = `<tr><td colspan="8" class="text-center text-red-500 p-10">Error: ${data.message}</td></tr>`; rawHistoryIn = data || []; applyFilterIn(); }); 
+    }
     
-    function loadHistoryIn() { document.getElementById('historyInTableBody').innerHTML = '<tr><td colspan="8" class="text-center p-10"><div class="loader"></div> กำลังโหลด...</td></tr>'; callAPI('getTransactions', {department: getCurrentDept(), type: 'IN'}).then(data => { if(data.error) return document.getElementById('historyInTableBody').innerHTML = `<tr><td colspan="8" class="text-center text-red-500 p-10">Error: ${data.message}</td></tr>`; rawHistoryIn = data || []; applyFilterIn(); }); }
+    function saveActualReq(e) { 
+        e.preventDefault(); 
+        callAPI('updateToActualReq', {transId: document.getElementById('update_trans_id').value, actualReqNo: document.getElementById('update_req_no').value, actualReqDate: document.getElementById('update_req_date').value}).then(res => { alert(res.message); if(res.success) { updateReqModalInstance.hide(); loadHistoryIn(); } }); 
+    }
     
-    function saveActualReq(e) { e.preventDefault(); callAPI('updateToActualReq', {transId: document.getElementById('update_trans_id').value, actualReqNo: document.getElementById('update_req_no').value, actualReqDate: document.getElementById('update_req_date').value}).then(res => { alert(res.message); if(res.success) { updateReqModalInstance.hide(); loadHistoryIn(); } }); }
-    
-    function loadHistoryOut() { document.getElementById('historyOutTableBody').innerHTML = '<tr><td colspan="7" class="text-center p-10"><div class="loader"></div> กำลังโหลด...</td></tr>'; callAPI('getTransactions', {department: getCurrentDept(), type: 'OUT'}).then(data => { if(data.error) return document.getElementById('historyOutTableBody').innerHTML = `<tr><td colspan="7" class="text-center text-red-500 p-10">Error: ${data.message}</td></tr>`; rawHistoryOut = data || []; applyFilterOut(); }); }
+    function loadHistoryOut() { 
+        document.getElementById('historyOutTableBody').innerHTML = '<tr><td colspan="7" class="text-center p-10"><div class="loader"></div> กำลังโหลด...</td></tr>'; 
+        callAPI('getTransactions', {department: getCurrentDept(), type: 'OUT'}).then(data => { if(data.error) return document.getElementById('historyOutTableBody').innerHTML = `<tr><td colspan="7" class="text-center text-red-500 p-10">Error: ${data.message}</td></tr>`; rawHistoryOut = data || []; applyFilterOut(); }); 
+    }
     
     function loadDashboardData() { 
         document.getElementById('dash_total_val').innerText='...'; document.getElementById('dash_min_count').innerText='...'; document.getElementById('dash_exp_count').innerText='...'; document.getElementById('dash_em_count').innerText='...'; 
