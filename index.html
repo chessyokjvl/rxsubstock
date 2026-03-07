@@ -247,9 +247,7 @@
                     <th class="p-3 border-b text-center cursor-pointer hover:bg-slate-200" onclick="sortInvReport('Earliest_Exp')">หมดอายุเร็วสุด <span id="sort_Earliest_Exp" class="text-xs text-slate-400"></span></th>
                   </tr>
                 </thead>
-                <tbody id="invTableBody">
-                  <tr><td colspan="6" class="text-center p-6 text-slate-500">กำลังโหลด...</td></tr>
-                </tbody>
+                <tbody id="invTableBody"><tr><td colspan="6" class="text-center p-6 text-slate-500">กำลังโหลด...</td></tr></tbody>
               </table>
             </div>
           </div>
@@ -609,12 +607,12 @@
       <div class="modal-dialog">
           <div class="modal-content">
               <div class="modal-header bg-purple-50 border-0">
-                  <h5 class="modal-title font-bold text-purple-800">ปรับปรุงยอดคงเหลือ (Take Stock)</h5>
+                  <h5 class="modal-title font-bold text-purple-800">ปรับปรุงยอดคงเหลือ (ลดยอดลง)</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
               </div>
               <form id="tsAdjustForm" onsubmit="submitTsAdjust(event)">
                   <div class="modal-body pt-2">
-                      <p class="text-xs text-slate-500 mb-4 bg-slate-50 p-2 rounded">ระบบจะบันทึกรายการจ่ายออกเพื่อปรับยอดให้ตรงกับที่นับได้จริง</p>
+                      <p class="text-xs text-slate-500 mb-4 bg-slate-50 p-2 rounded">ระบบจะบันทึกรายการจ่ายออกเพื่อปรับยอดให้ตรงกับที่นับได้จริง (พบน้อยกว่าระบบ)</p>
                       <input type="hidden" id="ts_adj_drug_id">
                       <input type="hidden" id="ts_adj_qty">
                       <div class="mb-3"><label class="form-label text-xs font-bold text-slate-600">รายการยา</label><p id="ts_adj_drug_name" class="form-control bg-slate-100 text-sm font-medium border-none">-</p></div>
@@ -623,6 +621,36 @@
                   </div>
                   <div class="modal-footer border-0">
                       <button type="submit" class="btn btn-danger w-full font-bold" id="btnTsAdjust">ยืนยันปรับปรุงยอด (ตัดสต๊อก)</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
+
+  <div class="modal fade" id="tsAdjustInModal" tabindex="-1">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header bg-green-50 border-0">
+                  <h5 class="modal-title font-bold text-green-800">ปรับปรุงยอดคงเหลือ (เพิ่มยอดขึ้น)</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <form id="tsAdjustInForm" onsubmit="submitTsAdjustIn(event)">
+                  <div class="modal-body pt-2">
+                      <p class="text-xs text-slate-500 mb-4 bg-slate-50 p-2 rounded">ระบบจะบันทึกรายการรับเข้าเพื่อปรับยอดให้ตรงกับที่นับได้จริง (พบมากกว่าระบบ)</p>
+                      <input type="hidden" id="ts_adj_in_drug_id">
+                      <input type="hidden" id="ts_adj_in_qty">
+                      <div class="mb-3"><label class="form-label text-xs font-bold text-slate-600">รายการยา</label><p id="ts_adj_in_drug_name" class="form-control bg-slate-100 text-sm font-medium border-none">-</p></div>
+                      <div class="mb-3"><label class="form-label text-xs font-bold text-slate-600">ยอดที่ต้องปรับ (รับเข้า)</label><p class="form-control bg-green-50 text-green-600 font-black text-lg border-green-200" id="ts_adj_in_qty_display">-</p></div>
+                      
+                      <div class="grid grid-cols-2 gap-3 mb-3">
+                          <div><label class="form-label text-xs font-bold text-slate-600">Lot. (ถ้ามี)</label><input type="text" id="ts_adj_in_lot" class="form-control text-sm" value="-"></div>
+                          <div><label class="form-label text-xs font-bold text-slate-600">หมดอายุ (ถ้ามี)</label><input type="text" id="ts_adj_in_exp" class="form-control bg-white date-empty text-sm"></div>
+                      </div>
+                      
+                      <div class="mb-3"><label class="form-label text-xs font-bold text-slate-600">ระบุวันที่แก้ไขย้อนหลัง</label><input type="text" class="form-control bg-white date-today text-sm" id="ts_adj_in_date" required></div>
+                  </div>
+                  <div class="modal-footer border-0">
+                      <button type="submit" class="btn btn-success w-full font-bold" id="btnTsAdjustIn">ยืนยันปรับปรุงยอด (รับเข้า)</button>
                   </div>
               </form>
           </div>
@@ -655,7 +683,7 @@
     let currentUser = null;
     let allDrugsList = [];
     let tomSelectRecv = null, tomSelectDisp = null, tomSelectFilterIn = null, tomSelectFilterOut = null, tomSelectVc = null, tomSelectTs = null;
-    let drugModalInstance = null, updateReqModalInstance = null, tsAdjustModalInstance = null;
+    let drugModalInstance = null, updateReqModalInstance = null, tsAdjustModalInstance = null, tsAdjustInModalInstance = null;
     let rawHistoryIn = [], rawHistoryOut = []; 
     let filteredHistoryIn = [], filteredHistoryOut = []; 
     let tsInventoryList = []; 
@@ -677,6 +705,7 @@
       drugModalInstance = new bootstrap.Modal(document.getElementById('drugModal'));
       updateReqModalInstance = new bootstrap.Modal(document.getElementById('updateReqModal'));
       tsAdjustModalInstance = new bootstrap.Modal(document.getElementById('tsAdjustModal'));
+      tsAdjustInModalInstance = new bootstrap.Modal(document.getElementById('tsAdjustInModal')); // เพิ่ม Modal ใหม่
       
       flatpickr(".date-today", { dateFormat: "Y-m-d", altInput: true, altFormat: "d/m/Y", defaultDate: "today" });
       flatpickr(".date-empty", { dateFormat: "Y-m-d", altInput: true, altFormat: "d/m/Y" });
@@ -1586,7 +1615,7 @@
             ac.innerHTML=`<button type="button" onclick="openTsAdjustModal('${dId}', ${Math.abs(d)})" class="bg-red-100 text-red-700 px-3 py-1.5 rounded-lg text-xs font-bold border border-red-200 hover:bg-red-200 shadow-sm">ตัดยอดลง (-${Math.abs(d)})</button>`; 
         } else if(d>0){ 
             df.className="p-3 text-center font-black text-xl text-green-600"; 
-            ac.innerHTML=`<span class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded">เกินระบบ (คีย์รับเข้า)</span>`; 
+            ac.innerHTML=`<button type="button" onclick="openTsAdjustInModal('${dId}', ${d})" class="bg-green-100 text-green-700 px-3 py-1.5 rounded-lg text-xs font-bold border border-green-200 hover:bg-green-200 shadow-sm">เพิ่มยอดขึ้น (+${d})</button>`; 
         } else { 
             df.className="p-3 text-center font-black text-xl text-slate-400"; 
             ac.innerHTML=`<span class="text-green-600 text-sm font-black">✓ ตรงเป๊ะ</span>`; 
@@ -1605,6 +1634,19 @@
             tsAdjustModalInstance.show(); 
         } catch(e) { alert(e.message); } 
     };
+
+    window.openTsAdjustInModal=function(dId, d){ 
+        try{ 
+            const dr=tsInventoryList.find(x=>x.Drug_ID===dId); 
+            document.getElementById('ts_adj_in_drug_id').value=dId; 
+            document.getElementById('ts_adj_in_qty').value=d; 
+            document.getElementById('ts_adj_in_drug_name').innerText=dr.Drug_Name; 
+            document.getElementById('ts_adj_in_qty_display').innerText='+' + d + ' ' + dr.Unit; 
+            let el=document.getElementById('ts_adj_in_date'); 
+            if(el&&el._flatpickr) el._flatpickr.setDate(new Date()); 
+            tsAdjustInModalInstance.show(); 
+        } catch(e) { alert(e.message); } 
+    };
     
     function submitTsAdjust(e) { 
         e.preventDefault(); 
@@ -1617,12 +1659,40 @@
             userId:currentUser.id, 
             department:getCurrentDept(), 
             reason:'ปรับปรุงสต๊อก (Take Stock)', 
-            destination: 'ปรับปรุงสต๊อก' 
+            destination: 'ปรับปรุงสต๊อก (ลดยอด)' 
         }; 
         callAPI('dispenseDrug', d).then(res=>{ 
             alert(res.message); 
             tsAdjustModalInstance.hide(); 
             btn.disabled=false; btn.innerText='ยืนยันปรับปรุงยอด (ตัดสต๊อก)'; 
+            if(res.success){ loadTakeStockData(); loadDashboardData(); } 
+        }); 
+    }
+
+    function submitTsAdjustIn(e) { 
+        e.preventDefault(); 
+        const btn=document.getElementById('btnTsAdjustIn'); 
+        btn.disabled=true; btn.innerText='ประมวลผล...'; 
+        const payload={ 
+            header: {
+                date:document.getElementById('ts_adj_in_date').value, 
+                reqType: 'ปรับปรุงสต๊อก (Take Stock)',
+                reqNo: 'ADJ-IN',
+                userId:currentUser.id, 
+                department:getCurrentDept(), 
+                source: 'พบเกินในระบบ (Take Stock)' 
+            },
+            items: [{
+                drugId:document.getElementById('ts_adj_in_drug_id').value, 
+                qtyIn:document.getElementById('ts_adj_in_qty').value, 
+                lotNo: document.getElementById('ts_adj_in_lot').value || '-',
+                expDate: document.getElementById('ts_adj_in_exp').value || ''
+            }]
+        }; 
+        callAPI('receiveDrugsBulk', payload).then(res=>{ 
+            alert(res.message); 
+            tsAdjustInModalInstance.hide(); 
+            btn.disabled=false; btn.innerText='ยืนยันปรับปรุงยอด (รับเข้า)'; 
             if(res.success){ loadTakeStockData(); loadDashboardData(); } 
         }); 
     }
