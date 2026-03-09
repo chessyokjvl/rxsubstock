@@ -29,11 +29,9 @@
       .print-doc th { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; }
       .print-doc .text-center { text-align: center; } .print-doc .text-right { text-align: right; }
       .print-doc h2 { text-align: center; font-size: 18px; margin-bottom: 5px; font-weight: bold; }
-      
       .sticker-row { border: 1px solid #000; padding: 5px; margin-bottom: 5px; font-size: 11px; page-break-inside: avoid; }
       .sticker-table { width: 100%; border-collapse: collapse; text-align: center; }
       .sticker-table th, .sticker-table td { border: 1px solid #000; padding: 2px 4px; }
-      
       .no-print { display: none !important; }
       .no-print-input { display: none !important; }
       .print-only-display { display: table-cell !important; }
@@ -44,7 +42,7 @@
 <body class="h-screen flex overflow-hidden">
 
   <script>
-    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwHgO6TAvqXMdSkQ9YI7zkjrtHNuCX1AtHTUmQw6G70ElCKLn0Z5UXZ0mbKppuz4wey/exec';
+    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby2uudRc7Ov8Gron-WHAzGb9iuNsgZjOS-VpJfv3YM5W8QFqCSg4ytyrKms1xPzLPRp/exec';
   </script>
 
   <div id="loginPage" class="fixed inset-0 bg-slate-100 flex items-center justify-center z-[100]">
@@ -184,7 +182,7 @@
              <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3 border-b pb-3">
                 <div>
                    <h3 class="text-lg font-bold text-teal-800">📝 สร้างรายการขอเบิกยาจากคลังใหญ่</h3>
-                   <p class="text-xs text-slate-500 mt-1">ระบบจะคำนวณจำนวนที่ควรเบิกให้อัตโนมัติ (แนะนำเฉพาะรายการที่ต่ำกว่า Max)</p>
+                   <p class="text-xs text-slate-500 mt-1">ระบบจะคำนวณจำนวนที่ควรเบิกให้อัตโนมัติ (แนะนำให้ครบ Max)</p>
                 </div>
                 <div class="flex gap-2 w-full md:w-auto">
                    <button onclick="exportToExcel('reqTableExport', 'ใบขอเบิกยา')" class="flex-1 md:flex-none bg-green-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-700 shadow-sm font-medium">📊 Export</button>
@@ -627,36 +625,6 @@
       </div>
   </div>
 
-  <div class="modal fade" id="tsAdjustInModal" tabindex="-1">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header bg-green-50 border-0">
-                  <h5 class="modal-title font-bold text-green-800">ปรับปรุงยอดคงเหลือ (เพิ่มยอดขึ้น)</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-              </div>
-              <form id="tsAdjustInForm" onsubmit="submitTsAdjustIn(event)">
-                  <div class="modal-body pt-2">
-                      <p class="text-xs text-slate-500 mb-4 bg-slate-50 p-2 rounded">ระบบจะบันทึกรายการรับเข้าเพื่อปรับยอดให้ตรงกับที่นับได้จริง (พบมากกว่าระบบ)</p>
-                      <input type="hidden" id="ts_adj_in_drug_id">
-                      <input type="hidden" id="ts_adj_in_qty">
-                      <div class="mb-3"><label class="form-label text-xs font-bold text-slate-600">รายการยา</label><p id="ts_adj_in_drug_name" class="form-control bg-slate-100 text-sm font-medium border-none">-</p></div>
-                      <div class="mb-3"><label class="form-label text-xs font-bold text-slate-600">ยอดที่ต้องปรับ (รับเข้า)</label><p class="form-control bg-green-50 text-green-600 font-black text-lg border-green-200" id="ts_adj_in_qty_display">-</p></div>
-                      
-                      <div class="grid grid-cols-2 gap-3 mb-3">
-                          <div><label class="form-label text-xs font-bold text-slate-600">Lot. (ถ้ามี)</label><input type="text" id="ts_adj_in_lot" class="form-control text-sm" value="-"></div>
-                          <div><label class="form-label text-xs font-bold text-slate-600">หมดอายุ (ถ้ามี)</label><input type="text" id="ts_adj_in_exp" class="form-control bg-white date-empty text-sm"></div>
-                      </div>
-                      
-                      <div class="mb-3"><label class="form-label text-xs font-bold text-slate-600">ระบุวันที่แก้ไขย้อนหลัง</label><input type="text" class="form-control bg-white date-today text-sm" id="ts_adj_in_date" required></div>
-                  </div>
-                  <div class="modal-footer border-0">
-                      <button type="submit" class="btn btn-success w-full font-bold" id="btnTsAdjustIn">ยืนยันปรับปรุงยอด (รับเข้า)</button>
-                  </div>
-              </form>
-          </div>
-      </div>
-  </div>
-
   <div id="printArea"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -683,7 +651,7 @@
     let currentUser = null;
     let allDrugsList = [];
     let tomSelectRecv = null, tomSelectDisp = null, tomSelectFilterIn = null, tomSelectFilterOut = null, tomSelectVc = null, tomSelectTs = null;
-    let drugModalInstance = null, updateReqModalInstance = null, tsAdjustModalInstance = null, tsAdjustInModalInstance = null;
+    let drugModalInstance = null, updateReqModalInstance = null, tsAdjustModalInstance = null;
     let rawHistoryIn = [], rawHistoryOut = []; 
     let filteredHistoryIn = [], filteredHistoryOut = []; 
     let tsInventoryList = []; 
@@ -705,7 +673,6 @@
       drugModalInstance = new bootstrap.Modal(document.getElementById('drugModal'));
       updateReqModalInstance = new bootstrap.Modal(document.getElementById('updateReqModal'));
       tsAdjustModalInstance = new bootstrap.Modal(document.getElementById('tsAdjustModal'));
-      tsAdjustInModalInstance = new bootstrap.Modal(document.getElementById('tsAdjustInModal')); // เพิ่ม Modal ใหม่
       
       flatpickr(".date-today", { dateFormat: "Y-m-d", altInput: true, altFormat: "d/m/Y", defaultDate: "today" });
       flatpickr(".date-empty", { dateFormat: "Y-m-d", altInput: true, altFormat: "d/m/Y" });
@@ -1211,16 +1178,22 @@
             if(data.error) return alert("Error: " + data.message);
             autoReqData = [];
             data.forEach(d => {
-                let max = Number(d.Max); let min = Number(d.Min); let bal = Number(d.Balance); let pack = Number(d.Pack_Size);
-                if (max > 0 && bal < max && pack > 0) {
-                    let need = max - bal;
-                    let suggestPacks = Math.floor(need / pack); 
+                let maxPacks = Number(d.Max); 
+                let minPacks = Number(d.Min); 
+                let balBase = Number(d.Balance); 
+                let packSize = Number(d.Pack_Size);
+                
+                if (maxPacks > 0 && packSize > 0) {
+                    let maxBase = maxPacks * packSize;
                     
-                    if (suggestPacks === 0 && bal <= min) { suggestPacks = 1; }
-
-                    if (suggestPacks > 0) {
-                        let suggestBase = suggestPacks * pack;
-                        autoReqData.push({ ...d, SuggestPacks: suggestPacks, SuggestBase: suggestBase, ReqQty: suggestBase });
+                    if (balBase < maxBase) {
+                        let currentPacks = balBase / packSize; 
+                        let suggestPacks = maxPacks - Math.floor(currentPacks); 
+                        
+                        if (suggestPacks > 0) {
+                            let suggestBase = suggestPacks * packSize;
+                            autoReqData.push({ ...d, SuggestPacks: suggestPacks, SuggestBase: suggestBase, ReqQty: suggestBase });
+                        }
                     }
                 }
             });
@@ -1239,8 +1212,9 @@
             return; 
         }
         autoReqData.forEach((r, i) => {
-            let balClass = r.Balance <= r.Min ? 'text-red-600 font-black' : 'text-slate-800 font-bold';
-            let warnIcon = r.Balance <= r.Min ? '🚨' : '';
+            let minBase = Number(r.Min) * Number(r.Pack_Size);
+            let balClass = Number(r.Balance) <= minBase ? 'text-red-600 font-black' : 'text-slate-800 font-bold';
+            let warnIcon = Number(r.Balance) <= minBase ? '🚨' : '';
             tb.innerHTML += `<tr class="border-b hover:bg-slate-50" id="req_row_${i}">
                     <td class="p-3 text-xs text-slate-500 font-mono">${r.Drug_ID}</td>
                     <td class="p-3 font-bold text-slate-800">${warnIcon} ${r.Drug_Name}</td>
@@ -1330,7 +1304,8 @@
           if (searchTxt && !d.Drug_Name.toLowerCase().includes(searchTxt) && !d.Drug_ID.toLowerCase().includes(searchTxt)) return;
           count++; 
           let expDisplay = d.Earliest_Exp ? safeFormatDate(d.Earliest_Exp) : '-'; 
-          let balClass = d.Balance <= d.Min ? "text-red-600 font-black" : "text-slate-800 font-bold";
+          let minBase = Number(d.Min) * Number(d.Pack_Size);
+          let balClass = Number(d.Balance) <= minBase ? "text-red-600 font-black" : "text-slate-800 font-bold";
           tb.innerHTML += `<tr class="border-b hover:bg-slate-50"><td class="p-3 text-slate-500 text-xs font-mono">${d.Drug_ID}</td><td class="p-3 font-bold text-slate-800">${d.Drug_Name}</td><td class="p-3 text-right ${balClass} text-xl">${d.Balance}</td><td class="p-3 text-center text-sm font-medium text-slate-700">${d.Unit} <span class="text-xs text-slate-400 block">(${d.Pack_Size})</span></td><td class="p-3 text-center text-xs font-medium text-slate-500">${d.Min} / ${d.Max}</td><td class="p-3 text-center text-yellow-700 font-bold font-mono">${expDisplay}</td></tr>`;
        });
        if(count === 0) tb.innerHTML = '<tr><td colspan="6" class="text-center p-10 text-slate-500">ไม่พบรายการยา</td></tr>';
@@ -1555,7 +1530,7 @@
             
             let m=''; 
             if(d.belowMinList.length===0) m='<li class="text-green-600 font-bold p-3 bg-green-50 rounded border border-green-100">✅ ยอดเยี่ยม! สต๊อกเพียงพอทุกรายการ</li>'; 
-            else d.belowMinList.forEach(x=>m+=`<li class="border-b py-3 text-red-800"><strong>${x.name}</strong> <br><span class="text-red-600 font-bold">คงเหลือ: ${x.bal} ${x.unit}</span> <span class="text-slate-400 text-xs">(จุดสั่งซื้อ: ${x.min})</span></li>`); 
+            else d.belowMinList.forEach(x=>m+=`<li class="border-b py-3 text-red-800"><strong>${x.name}</strong> <br><span class="text-red-600 font-bold">คงเหลือ: ${x.bal} ${x.unit}</span> <span class="text-slate-400 text-xs">(จุดสั่งซื้อ: ${x.min} กล่อง)</span></li>`); 
             document.getElementById('dash_min_list').innerHTML=m; 
             
             let e=''; 
