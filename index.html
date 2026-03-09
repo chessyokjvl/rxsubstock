@@ -29,9 +29,11 @@
       .print-doc th { background-color: #f1f5f9 !important; -webkit-print-color-adjust: exact; }
       .print-doc .text-center { text-align: center; } .print-doc .text-right { text-align: right; }
       .print-doc h2 { text-align: center; font-size: 18px; margin-bottom: 5px; font-weight: bold; }
+      
       .sticker-row { border: 1px solid #000; padding: 5px; margin-bottom: 5px; font-size: 11px; page-break-inside: avoid; }
       .sticker-table { width: 100%; border-collapse: collapse; text-align: center; }
       .sticker-table th, .sticker-table td { border: 1px solid #000; padding: 2px 4px; }
+      
       .no-print { display: none !important; }
       .no-print-input { display: none !important; }
       .print-only-display { display: table-cell !important; }
@@ -52,25 +54,14 @@
          <p class="text-gray-500 text-sm mt-2 font-medium">รพ.จิตเวชเลยราชนครินทร์</p>
       </div>
       <form id="loginForm" onsubmit="handleLogin(event)">
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2">ชื่อผู้ใช้งาน</label>
-            <input type="text" id="username" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none" required>
-        </div>
-        <div class="mb-6">
-            <label class="block text-gray-700 text-sm font-bold mb-2">รหัสผ่าน</label>
-            <input type="password" id="password" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none" required>
-        </div>
+        <div class="mb-4"><label class="block text-gray-700 text-sm font-bold mb-2">ชื่อผู้ใช้งาน</label><input type="text" id="username" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none" required></div>
+        <div class="mb-6"><label class="block text-gray-700 text-sm font-bold mb-2">รหัสผ่าน</label><input type="password" id="password" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none" required></div>
         <div id="loginError" class="text-red-500 text-sm mb-4 hidden text-center bg-red-50 p-2 rounded"></div>
-        <button type="submit" id="loginBtn" class="w-full bg-green-700 text-white font-bold py-3 rounded-lg hover:bg-green-800 transition flex justify-center items-center shadow-md">
-            <span id="loginBtnText">เข้าสู่ระบบ</span>
-            <div id="loginSpinner" class="loader ml-2 hidden"></div>
-        </button>
+        <button type="submit" id="loginBtn" class="w-full bg-green-700 text-white font-bold py-3 rounded-lg hover:bg-green-800 transition flex justify-center items-center shadow-md"><span id="loginBtnText">เข้าสู่ระบบ</span><div id="loginSpinner" class="loader ml-2 hidden"></div></button>
       </form>
       <div class="mt-6 text-center border-t pt-6">
         <p class="text-xs text-gray-500 mb-3">สำหรับบุคลากรทั่วไป (ดูเฉพาะภาพรวม)</p>
-        <button type="button" onclick="loginAsGuest()" class="w-full bg-slate-100 text-slate-700 font-bold py-2.5 rounded-lg hover:bg-slate-200 transition shadow-sm border border-slate-200">
-            👁️ เข้าชมแบบผู้เยี่ยมชม (Guest)
-        </button>
+        <button type="button" onclick="loginAsGuest()" class="w-full bg-slate-100 text-slate-700 font-bold py-2.5 rounded-lg hover:bg-slate-200 transition shadow-sm border border-slate-200">👁️ เข้าชมแบบผู้เยี่ยมชม (Guest)</button>
       </div>
     </div>
   </div>
@@ -182,7 +173,7 @@
              <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3 border-b pb-3">
                 <div>
                    <h3 class="text-lg font-bold text-teal-800">📝 สร้างรายการขอเบิกยาจากคลังใหญ่</h3>
-                   <p class="text-xs text-slate-500 mt-1">ระบบจะคำนวณจำนวนที่ควรเบิกให้อัตโนมัติ (แนะนำให้ครบ Max)</p>
+                   <p class="text-xs text-slate-500 mt-1">กดปุ่มรีเฟรชได้เรื่อยๆ ระบบจะคำนวณจำนวนแพ็คที่ต้องเบิกให้อัตโนมัติ (ไม่เกิน Max)</p>
                 </div>
                 <div class="flex gap-2 w-full md:w-auto">
                    <button onclick="exportToExcel('reqTableExport', 'ใบขอเบิกยา')" class="flex-1 md:flex-none bg-green-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-700 shadow-sm font-medium">📊 Export</button>
@@ -192,10 +183,10 @@
              
              <div class="mb-4 p-4 bg-teal-50 border border-teal-100 rounded-lg flex flex-col md:flex-row gap-4 items-center justify-between">
                 <div class="text-sm text-teal-800 font-medium">
-                   🎯 คลิกปุ่มด้านขวา เพื่อให้ระบบสแกนคลัง <b><span id="auto_req_dept_display"></span></b> และจัดทำรายการขอเบิกให้ทันที
+                   🎯 สแกนคลัง <b><span id="auto_req_dept_display"></span></b> และคำนวณแพ็คเบิกอัตโนมัติ
                 </div>
                 <button onclick="loadAutoRequisition()" class="w-full md:w-auto bg-teal-600 text-white px-5 py-2.5 rounded-lg text-sm hover:bg-teal-700 shadow-md font-bold transition">
-                   🔄 ประมวลผลสร้างใบเบิก
+                   🔄 ประมวลผลสร้างใบเบิกใหม่
                 </button>
              </div>
 
@@ -206,15 +197,15 @@
                          <th class="p-3 border-b text-slate-600 font-semibold w-16">รหัสยา</th>
                          <th class="p-3 border-b text-slate-600 font-semibold">ชื่อยา</th>
                          <th class="p-3 border-b text-center text-slate-600 font-semibold">คงเหลือ</th>
-                         <th class="p-3 border-b text-center text-slate-600 font-semibold">Min/Max</th>
-                         <th class="p-3 border-b text-center text-blue-700 font-bold bg-blue-50">แนะนำเบิก</th>
-                         <th class="p-3 border-b text-center text-teal-800 font-bold bg-teal-50 w-32">เบิกจริง (แก้ไขได้)</th>
-                         <th class="p-3 border-b text-center text-slate-600 font-semibold">บรรจุ</th>
+                         <th class="p-3 border-b text-center text-slate-600 font-semibold">Min/Max<br><span class="text-[10px] font-normal">(แพ็ค)</span></th>
+                         <th class="p-3 border-b text-center text-blue-700 font-bold bg-blue-50">แนะนำเบิก<br><span class="text-[10px] font-normal text-slate-500">(แพ็ค)</span></th>
+                         <th class="p-3 border-b text-center text-teal-800 font-bold bg-teal-50 w-32">เบิกจริง (แก้ไขได้)<br><span class="text-[10px] font-normal text-teal-600">(แพ็ค x บรรจุ)</span></th>
+                         <th class="p-3 border-b text-center text-slate-600 font-semibold">หน่วย</th>
                          <th class="p-3 border-b text-center no-print">ลบ</th>
                       </tr>
                    </thead>
                    <tbody id="reqTableBody">
-                      <tr><td colspan="8" class="text-center p-10 text-slate-400 border-dashed border-2 m-4">กดปุ่ม "ประมวลผลสร้างใบเบิก" ด้านบนเพื่อเริ่มต้น</td></tr>
+                      <tr><td colspan="8" class="text-center p-10 text-slate-400 border-dashed border-2 m-4">กดปุ่ม "ประมวลผลสร้างใบเบิกใหม่" ด้านบนเพื่อเริ่มต้น</td></tr>
                    </tbody>
                 </table>
              </div>
@@ -230,9 +221,7 @@
                  <button onclick="printInventoryReport()" class="flex-1 md:flex-none bg-slate-800 text-white px-3 py-2 rounded-lg text-sm hover:bg-slate-900 shadow-sm">🖨️ พิมพ์</button>
                </div>
             </div>
-            <div class="mb-4">
-              <input type="text" id="inv_search" class="w-full border px-4 py-2.5 rounded-lg text-sm focus:ring-2 focus:ring-green-500 outline-none" placeholder="🔍 ค้นหาชื่อยา หรือ รหัสยา..." onkeyup="applyInvFilter()">
-            </div>
+            <div class="mb-4"><input type="text" id="inv_search" class="w-full border px-4 py-2.5 rounded-lg text-sm focus:ring-2 focus:ring-green-500 outline-none" placeholder="🔍 ค้นหาชื่อยา หรือ รหัสยา..." onkeyup="applyInvFilter()"></div>
             <div class="overflow-x-auto flex-1 border rounded-lg">
               <table class="w-full text-left text-sm border-collapse whitespace-nowrap" id="invReportTable">
                 <thead class="bg-slate-100 sticky top-0 shadow-sm z-10 select-none">
@@ -241,7 +230,7 @@
                     <th class="p-3 border-b cursor-pointer hover:bg-slate-200" onclick="sortInvReport('Drug_Name')">ชื่อยา <span id="sort_Drug_Name" class="text-xs text-slate-400"></span></th>
                     <th class="p-3 border-b text-right cursor-pointer hover:bg-slate-200" onclick="sortInvReport('Balance')">คงเหลือสุทธิ <span id="sort_Balance" class="text-xs text-slate-400"></span></th>
                     <th class="p-3 border-b text-center">หน่วย (บรรจุ)</th>
-                    <th class="p-3 border-b text-center">Min / Max</th>
+                    <th class="p-3 border-b text-center">Min / Max <span class="text-[10px] block font-normal">(แพ็ค)</span></th>
                     <th class="p-3 border-b text-center cursor-pointer hover:bg-slate-200" onclick="sortInvReport('Earliest_Exp')">หมดอายุเร็วสุด <span id="sort_Earliest_Exp" class="text-xs text-slate-400"></span></th>
                   </tr>
                 </thead>
@@ -273,8 +262,8 @@
                   <div class="col-span-2"><strong>ชื่อยา:</strong> <span id="vc_info_name" class="text-blue-800 font-bold"></span></div>
                   <div><strong>บาร์โค้ด:</strong> <span id="vc_info_barcode"></span></div>
                   <div><strong>บรรจุ:</strong> <span id="vc_info_pack"></span> <span id="vc_info_unit"></span></div>
-                  <div class="text-red-600"><strong>Min:</strong> <span id="vc_info_min"></span></div>
-                  <div class="text-green-700"><strong>Max:</strong> <span id="vc_info_max"></span></div>
+                  <div class="text-red-600"><strong>Min (แพ็ค):</strong> <span id="vc_info_min"></span></div>
+                  <div class="text-green-700"><strong>Max (แพ็ค):</strong> <span id="vc_info_max"></span></div>
                </div>
             </div>
 
@@ -283,9 +272,7 @@
                 <thead class="bg-slate-100 sticky top-0 shadow-sm z-10">
                   <tr><th class="p-3 border-b">วันที่</th><th class="p-3 border-b">เอกสารอ้างอิง</th><th class="p-3 border-b">Lot/Exp</th><th class="p-3 border-b text-right text-blue-700">รับ</th><th class="p-3 border-b text-right text-orange-700">จ่าย</th><th class="p-3 border-b text-right font-bold">คงเหลือ</th><th class="p-3 border-b">หมายเหตุ (จาก/ไป)</th></tr>
                 </thead>
-                <tbody id="vcTableBody">
-                  <tr><td colspan="7" class="text-center p-10 text-slate-400">เลือกระบุข้อมูลด้านบนแล้วกด "ค้นหาประวัติ"</td></tr>
-                </tbody>
+                <tbody id="vcTableBody"><tr><td colspan="7" class="text-center p-10 text-slate-400">เลือกระบุข้อมูลด้านบนแล้วกด "ค้นหาประวัติ"</td></tr></tbody>
               </table>
             </div>
           </div>
@@ -537,7 +524,7 @@
               <div class="overflow-x-auto flex-1 border rounded-lg">
                  <table class="w-full text-left text-sm border-collapse whitespace-nowrap">
                     <thead class="bg-slate-100 sticky top-0 z-10">
-                       <tr><th class="p-3 border-b">รหัส</th><th class="p-3 border-b">ชื่อยา</th><th class="p-3 border-b">บาร์โค้ด</th><th class="p-3 border-b">Pack</th><th class="p-3 border-b text-center">Min/Max</th><th class="p-3 border-b">แผนกพื้นฐาน</th><th class="p-3 border-b text-center">จัดการ</th></tr>
+                       <tr><th class="p-3 border-b">รหัส</th><th class="p-3 border-b">ชื่อยา</th><th class="p-3 border-b">บาร์โค้ด</th><th class="p-3 border-b">Pack</th><th class="p-3 border-b text-center">Min/Max <br><span class="font-normal text-[10px]">(แพ็ค)</span></th><th class="p-3 border-b">แผนกพื้นฐาน</th><th class="p-3 border-b text-center">จัดการ</th></tr>
                     </thead>
                     <tbody id="drugTableBody">
                        <tr><td colspan="7" class="text-center p-10 text-slate-400">กำลังโหลด...</td></tr>
@@ -565,11 +552,11 @@
                           <div class="col-md-12"><label class="form-label text-xs font-bold text-slate-600">ชื่อยา</label><input type="text" class="form-control text-sm" id="modal_Drug_Name" required></div>
                           <div class="col-md-6"><label class="form-label text-xs font-bold text-slate-600">บาร์โค้ด</label><input type="text" class="form-control text-sm" id="modal_Barcode"></div>
                           <div class="col-md-6"><label class="form-label text-xs font-bold text-slate-600">แผนกพื้นฐาน</label><select class="form-select text-sm" id="modal_Department" required><option value="OPD">OPD</option><option value="IPD">IPD</option><option value="ALL">ALL (ทุกคลัง)</option></select></div>
-                          <div class="col-md-4"><label class="form-label text-xs font-bold text-slate-600">ขนาดบรรจุ</label><input type="number" class="form-control text-sm" id="modal_Pack_Size" required></div>
+                          <div class="col-md-4"><label class="form-label text-xs font-bold text-slate-600">ขนาดบรรจุ (Base Unit)</label><input type="number" class="form-control text-sm" id="modal_Pack_Size" required></div>
                           <div class="col-md-4"><label class="form-label text-xs font-bold text-slate-600">หน่วย</label><input type="text" class="form-control text-sm" id="modal_Unit" required></div>
                           <div class="col-md-4"><label class="form-label text-xs font-bold text-slate-600">ราคา/หน่วย</label><input type="number" step="0.01" class="form-control text-sm" id="modal_Unit_Price" required></div>
-                          <div class="col-md-6"><label class="form-label text-xs font-bold text-slate-600">Min</label><input type="number" class="form-control text-sm" id="modal_Min" required></div>
-                          <div class="col-md-6"><label class="form-label text-xs font-bold text-slate-600">Max</label><input type="number" class="form-control text-sm" id="modal_Max" required></div>
+                          <div class="col-md-6"><label class="form-label text-xs font-bold text-slate-600">จุดสั่งซื้อ Min (แพ็ค)</label><input type="number" class="form-control text-sm" id="modal_Min" required></div>
+                          <div class="col-md-6"><label class="form-label text-xs font-bold text-slate-600">จุดสูงสุด Max (แพ็ค)</label><input type="number" class="form-control text-sm" id="modal_Max" required></div>
                       </div>
                   </div>
                   <div class="modal-footer border-0">
@@ -625,6 +612,36 @@
       </div>
   </div>
 
+  <div class="modal fade" id="tsAdjustInModal" tabindex="-1">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header bg-green-50 border-0">
+                  <h5 class="modal-title font-bold text-green-800">ปรับปรุงยอดคงเหลือ (เพิ่มยอดขึ้น)</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <form id="tsAdjustInForm" onsubmit="submitTsAdjustIn(event)">
+                  <div class="modal-body pt-2">
+                      <p class="text-xs text-slate-500 mb-4 bg-slate-50 p-2 rounded">ระบบจะบันทึกรายการรับเข้าเพื่อปรับยอดให้ตรงกับที่นับได้จริง (พบมากกว่าระบบ)</p>
+                      <input type="hidden" id="ts_adj_in_drug_id">
+                      <input type="hidden" id="ts_adj_in_qty">
+                      <div class="mb-3"><label class="form-label text-xs font-bold text-slate-600">รายการยา</label><p id="ts_adj_in_drug_name" class="form-control bg-slate-100 text-sm font-medium border-none">-</p></div>
+                      <div class="mb-3"><label class="form-label text-xs font-bold text-slate-600">ยอดที่ต้องปรับ (รับเข้า)</label><p class="form-control bg-green-50 text-green-600 font-black text-lg border-green-200" id="ts_adj_in_qty_display">-</p></div>
+                      
+                      <div class="grid grid-cols-2 gap-3 mb-3">
+                          <div><label class="form-label text-xs font-bold text-slate-600">Lot. (ถ้ามี)</label><input type="text" id="ts_adj_in_lot" class="form-control text-sm" value="-"></div>
+                          <div><label class="form-label text-xs font-bold text-slate-600">หมดอายุ (ถ้ามี)</label><input type="text" id="ts_adj_in_exp" class="form-control bg-white date-empty text-sm"></div>
+                      </div>
+                      
+                      <div class="mb-3"><label class="form-label text-xs font-bold text-slate-600">ระบุวันที่แก้ไขย้อนหลัง</label><input type="text" class="form-control bg-white date-today text-sm" id="ts_adj_in_date" required></div>
+                  </div>
+                  <div class="modal-footer border-0">
+                      <button type="submit" class="btn btn-success w-full font-bold" id="btnTsAdjustIn">ยืนยันปรับปรุงยอด (รับเข้า)</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
+
   <div id="printArea"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -634,7 +651,7 @@
         try {
             const response = await fetch(GAS_WEB_APP_URL, { 
                 method: 'POST', 
-                redirect: 'follow', // บังคับตาม Redirect ของ Google
+                redirect: 'follow',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
                 body: JSON.stringify({ action: action, payload: payload }) 
             });
@@ -647,11 +664,10 @@
         }
     }
 
-    // ตัวแปรส่วนกลาง
     let currentUser = null;
     let allDrugsList = [];
     let tomSelectRecv = null, tomSelectDisp = null, tomSelectFilterIn = null, tomSelectFilterOut = null, tomSelectVc = null, tomSelectTs = null;
-    let drugModalInstance = null, updateReqModalInstance = null, tsAdjustModalInstance = null;
+    let drugModalInstance = null, updateReqModalInstance = null, tsAdjustModalInstance = null, tsAdjustInModalInstance = null;
     let rawHistoryIn = [], rawHistoryOut = []; 
     let filteredHistoryIn = [], filteredHistoryOut = []; 
     let tsInventoryList = []; 
@@ -660,19 +676,16 @@
     let vcRawData = null; 
     let autoReqData = [];
 
-    // ดึงแผนกปัจจุบันจาก Dropdown ด้านบน
     function getCurrentDept() { return document.getElementById('global_dept').value; }
 
-    // เมื่อโหลดหน้าเว็บเสร็จ
     document.addEventListener("DOMContentLoaded", () => {
       const savedUser = localStorage.getItem("subStockUser");
-      if (savedUser) {
-          showMainApp(JSON.parse(savedUser));
-      }
+      if (savedUser) { showMainApp(JSON.parse(savedUser)); }
       
       drugModalInstance = new bootstrap.Modal(document.getElementById('drugModal'));
       updateReqModalInstance = new bootstrap.Modal(document.getElementById('updateReqModal'));
       tsAdjustModalInstance = new bootstrap.Modal(document.getElementById('tsAdjustModal'));
+      tsAdjustInModalInstance = new bootstrap.Modal(document.getElementById('tsAdjustInModal'));
       
       flatpickr(".date-today", { dateFormat: "Y-m-d", altInput: true, altFormat: "d/m/Y", defaultDate: "today" });
       flatpickr(".date-empty", { dateFormat: "Y-m-d", altInput: true, altFormat: "d/m/Y" });
@@ -682,7 +695,6 @@
       flatpickr("#vc_end_date", { dateFormat: "Y-m-d", altInput: true, altFormat: "d/m/Y", defaultDate: "today" }); 
     });
 
-    // จัดรูปแบบวันที่
     function safeFormatDate(val) {
       if(!val) return '-';
       let d = new Date(val); 
@@ -690,7 +702,7 @@
       return String(val); 
     }
 
-    // Export Excel
+    // Export Excel อัปเดตเพื่อรองรับ Input แบบแพ็ค
     function exportToExcel(tableId, filename) {
         let csv = []; 
         let rows = document.querySelectorAll(`#${tableId} tr`);
@@ -699,10 +711,17 @@
             let cols = rows[i].querySelectorAll("td, th");
             for (let j = 0; j < cols.length; j++) {
                 if (cols[j].classList.contains('no-print')) continue;
+                if (cols[j].classList.contains('print-only-display')) continue; // ข้ามช่องปรินต์เฉพาะ
+                
                 let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""');
                 let input = cols[j].querySelector('input');
-                if(input && !cols[j].classList.contains('no-print-input')) data = input.value;
-                row.push('"' + data + '"');
+                
+                if (input) {
+                    let span = cols[j].querySelector('span');
+                    data = input.value + (span ? ' ' + span.innerText : '');
+                }
+                
+                row.push('"' + data.trim() + '"');
             }
             if(rows[i].style.display !== 'none') csv.push(row.join(","));
         }
@@ -715,13 +734,11 @@
         downloadLink.click();
     }
 
-    // จัดการ Sidebar
     function toggleSidebar() {
         document.getElementById('sidebar').classList.toggle('-translate-x-full');
         document.getElementById('sidebarOverlay').classList.toggle('hidden');
     }
 
-    // เข้าสู่ระบบ
     function handleLogin(e) { 
         e.preventDefault(); 
         const u = document.getElementById('username').value;
@@ -731,38 +748,22 @@
         const txt = document.getElementById('loginBtnText'); 
         const spin = document.getElementById('loginSpinner');
         
-        btn.disabled = true; 
-        txt.innerText = 'กำลังตรวจสอบ...'; 
-        spin.classList.remove('hidden');
+        btn.disabled = true; txt.innerText = 'กำลังตรวจสอบ...'; spin.classList.remove('hidden');
 
         callAPI('verifyLogin', {username: u, password: p}).then(res => { 
-            btn.disabled = false; 
-            txt.innerText = 'เข้าสู่ระบบ'; 
-            spin.classList.add('hidden');
-            
-            if(res.success){ 
-                localStorage.setItem("subStockUser", JSON.stringify(res.user)); 
-                showMainApp(res.user); 
-            } else { 
-                alert(res.message); 
-            } 
+            btn.disabled = false; txt.innerText = 'เข้าสู่ระบบ'; spin.classList.add('hidden');
+            if(res.success){ localStorage.setItem("subStockUser", JSON.stringify(res.user)); showMainApp(res.user); } 
+            else { alert(res.message); } 
         }); 
     }
     
-    // เข้าสู่ระบบแบบ Guest
     function loginAsGuest() { 
         const guestUser = { id: 'GUEST', username: 'guest', name: 'ผู้เยี่ยมชม', role: 'Guest', department: 'ALL' }; 
-        localStorage.setItem("subStockUser", JSON.stringify(guestUser)); 
-        showMainApp(guestUser); 
+        localStorage.setItem("subStockUser", JSON.stringify(guestUser)); showMainApp(guestUser); 
     }
     
-    // ออกจากระบบ
-    function logout() { 
-        localStorage.removeItem("subStockUser"); 
-        window.location.reload(); 
-    }
+    function logout() { localStorage.removeItem("subStockUser"); window.location.reload(); }
     
-    // จัดการแสดงผลหลักตามสิทธิ์
     function showMainApp(user) {
       currentUser = user; 
       document.getElementById('loginPage').style.display = 'none'; 
@@ -770,50 +771,35 @@
       document.getElementById('displayName').innerText = `${user.name} (${user.role})`; 
       
       const deptSelector = document.getElementById('global_dept');
-      if(user.department === 'OPD' || user.department === 'IPD') {
-          deptSelector.value = user.department;
-      } else {
-          deptSelector.value = 'ALL';
-      }
+      if(user.department === 'OPD' || user.department === 'IPD') { deptSelector.value = user.department; } else { deptSelector.value = 'ALL'; }
 
       document.querySelectorAll('.nav-menu-item').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.for-all').forEach(el => el.classList.remove('hidden'));
 
       if (user.role === 'Guest') { 
-         document.getElementById('operationalMenu').classList.add('hidden'); 
-         document.getElementById('guestWarning').classList.remove('hidden'); 
+         document.getElementById('operationalMenu').classList.add('hidden'); document.getElementById('guestWarning').classList.remove('hidden'); 
       } else if (user.role === 'User') { 
-         document.getElementById('operationalMenu').classList.remove('hidden'); 
-         document.getElementById('guestWarning').classList.add('hidden'); 
+         document.getElementById('operationalMenu').classList.remove('hidden'); document.getElementById('guestWarning').classList.add('hidden'); 
          document.querySelectorAll('.for-user').forEach(el => el.classList.remove('hidden'));
       } else { 
-         document.getElementById('operationalMenu').classList.remove('hidden'); 
-         document.getElementById('guestWarning').classList.add('hidden'); 
+         document.getElementById('operationalMenu').classList.remove('hidden'); document.getElementById('guestWarning').classList.add('hidden'); 
          document.querySelectorAll('.for-user').forEach(el => el.classList.remove('hidden'));
          document.querySelectorAll('.for-admin').forEach(el => el.classList.remove('hidden'));
       }
-      
       switchView('dashboard', 'Dashboard');
     }
 
     let currentViewId = 'dashboard';
     
-    // สลับหน้าจอ
     function switchView(viewId, title) {
       currentViewId = viewId;
       document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
       document.getElementById(`view-${viewId}`).classList.remove('hidden'); 
       document.getElementById('pageTitle').innerText = title;
-      
-      if(window.innerWidth < 768) { 
-          document.getElementById('sidebar').classList.add('-translate-x-full'); 
-          document.getElementById('sidebarOverlay').classList.add('hidden'); 
-      }
-      
+      if(window.innerWidth < 768) { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('sidebarOverlay').classList.add('hidden'); }
       refreshCurrentView();
     }
 
-    // โหลดข้อมูลตามหน้าจอที่เปิดอยู่
     function refreshCurrentView() {
       let v = currentViewId;
       let dLabel = document.getElementById('displayDepartment');
@@ -831,121 +817,51 @@
       if (v === 'auto-req') loadAutoRequisition();
     }
 
-    // ==========================================
-    // ฟังก์ชันย่อยการทำงานต่างๆ 
-    // ==========================================
-
-    // โหลด Master Data
     function loadDrugsData() { 
         document.getElementById('drugTableBody').innerHTML = '<tr><td colspan="7" class="text-center p-10">กำลังโหลด...</td></tr>';
         callAPI('getDrugsList').then(data => { 
-            allDrugsList = data; 
-            const tbody = document.getElementById('drugTableBody'); 
-            tbody.innerHTML = ''; 
-            data.forEach(d => {
-                tbody.innerHTML += `<tr class="border-b hover:bg-slate-50"><td class="p-2 text-slate-500">${d.Drug_ID}</td><td class="p-2 font-bold text-slate-800">${d.Drug_Name}</td><td class="p-2 text-slate-500">${d.Barcode||'-'}</td><td class="p-2">${d.Pack_Size} ${d.Unit}</td><td class="p-2 text-center text-blue-600 font-medium">${d.Min}/${d.Max}</td><td class="p-2"><span class="px-2 py-1 bg-slate-200 rounded text-xs font-bold text-slate-600">${d.Department}</span></td><td class="p-2 text-center"><button onclick="editDrug('${d.Drug_ID}')" class="text-yellow-600 hover:text-yellow-700 mx-1">✏️</button><button onclick="deleteDrugAction('${d.Drug_ID}')" class="text-red-500 hover:text-red-700 mx-1">🗑️</button></td></tr>`;
-            }); 
+            allDrugsList = data; const tbody = document.getElementById('drugTableBody'); tbody.innerHTML = ''; 
+            data.forEach(d => { tbody.innerHTML += `<tr class="border-b hover:bg-slate-50"><td class="p-2 text-slate-500">${d.Drug_ID}</td><td class="p-2 font-bold text-slate-800">${d.Drug_Name}</td><td class="p-2 text-slate-500">${d.Barcode||'-'}</td><td class="p-2">${d.Pack_Size} ${d.Unit}</td><td class="p-2 text-center text-blue-600 font-medium">${d.Min}/${d.Max}</td><td class="p-2"><span class="px-2 py-1 bg-slate-200 rounded text-xs font-bold text-slate-600">${d.Department}</span></td><td class="p-2 text-center"><button onclick="editDrug('${d.Drug_ID}')" class="text-yellow-600 hover:text-yellow-700 mx-1">✏️</button><button onclick="deleteDrugAction('${d.Drug_ID}')" class="text-red-500 hover:text-red-700 mx-1">🗑️</button></td></tr>`; }); 
         }); 
     }
     
-    function openDrugModal() { 
-        document.getElementById('drugForm').reset(); 
-        document.getElementById('modal_Drug_ID').value = ''; 
-        drugModalInstance.show(); 
-    }
-    
-    function editDrug(id) { 
-        const d = allDrugsList.find(x => x.Drug_ID === id); 
-        if(!d) return; 
-        ['Drug_ID','Barcode','Drug_Name','Pack_Size','Unit','Min','Max','Unit_Price','Department'].forEach(k => document.getElementById(`modal_${k}`).value = d[k]); 
-        drugModalInstance.show(); 
-    }
-    
+    function openDrugModal() { document.getElementById('drugForm').reset(); document.getElementById('modal_Drug_ID').value = ''; drugModalInstance.show(); }
+    function editDrug(id) { const d = allDrugsList.find(x => x.Drug_ID === id); if(!d) return; ['Drug_ID','Barcode','Drug_Name','Pack_Size','Unit','Min','Max','Unit_Price','Department'].forEach(k => document.getElementById(`modal_${k}`).value = d[k]); drugModalInstance.show(); }
     function saveDrugForm(e) { 
-        e.preventDefault(); 
-        const btn = document.getElementById('btnSaveDrug'); 
-        btn.disabled = true; btn.innerText = 'กำลังบันทึก...'; 
-        const data = {}; 
-        ['Drug_ID','Barcode','Drug_Name','Pack_Size','Unit','Min','Max','Unit_Price','Department'].forEach(k => data[k] = document.getElementById(`modal_${k}`).value); 
-        callAPI('saveDrug', data).then(res => { 
-            alert(res.message); 
-            drugModalInstance.hide(); 
-            loadDrugsData(); 
-            btn.disabled = false; 
-            btn.innerText = 'บันทึกข้อมูล'; 
-        }); 
+        e.preventDefault(); const btn = document.getElementById('btnSaveDrug'); btn.disabled = true; btn.innerText = 'กำลังบันทึก...'; 
+        const data = {}; ['Drug_ID','Barcode','Drug_Name','Pack_Size','Unit','Min','Max','Unit_Price','Department'].forEach(k => data[k] = document.getElementById(`modal_${k}`).value); 
+        callAPI('saveDrug', data).then(res => { alert(res.message); drugModalInstance.hide(); loadDrugsData(); btn.disabled = false; btn.innerText = 'บันทึกข้อมูล'; }); 
     }
-    
-    function deleteDrugAction(id) { 
-        if(confirm('ยืนยันการลบยานี้?')) {
-            callAPI('deleteDrug', {drugId: id}).then(r => loadDrugsData()); 
-        }
-    }
+    function deleteDrugAction(id) { if(confirm('ยืนยันการลบยานี้?')) { callAPI('deleteDrug', {drugId: id}).then(r => loadDrugsData()); } }
 
-    // โหลด Tom Select Dropdown
     function loadDrugsForTomSelect(elementId) {
       callAPI('getDrugsList').then(data => {
-        allDrugsList = data; 
-        const select = document.getElementById(elementId);
+        allDrugsList = data; const select = document.getElementById(elementId);
         let tsInstance = null; let dept = getCurrentDept();
-        
-        if(elementId === 'recv_drug') tsInstance = tomSelectRecv; 
-        if(elementId === 'disp_drug') tsInstance = tomSelectDisp; 
-        if(elementId === 'filter_in_drug') tsInstance = tomSelectFilterIn; 
-        if(elementId === 'filter_out_drug') tsInstance = tomSelectFilterOut; 
-        if(elementId === 'vc_drug') tsInstance = tomSelectVc; 
-        if(elementId === 'ts_drug') tsInstance = tomSelectTs;
-        
+        if(elementId === 'recv_drug') tsInstance = tomSelectRecv; if(elementId === 'disp_drug') tsInstance = tomSelectDisp; if(elementId === 'filter_in_drug') tsInstance = tomSelectFilterIn; if(elementId === 'filter_out_drug') tsInstance = tomSelectFilterOut; if(elementId === 'vc_drug') tsInstance = tomSelectVc; if(elementId === 'ts_drug') tsInstance = tomSelectTs;
         if(tsInstance !== null) { tsInstance.destroy(); }
-        
-        if(elementId.includes('filter') || elementId === 'vc_drug') {
-            select.innerHTML = '<option value="">-- เลือกรายการยา --</option>'; 
-        } else {
-            select.innerHTML = '<option value="">-- พิมพ์ค้นหายา --</option>';
-        }
-        
-        data.filter(d => dept === 'ALL' || d.Department === dept || d.Department === 'ALL').forEach(d => {
-            select.innerHTML += `<option value="${d.Drug_ID}">[${d.Drug_ID}] ${d.Drug_Name} (บาร์โค้ด: ${d.Barcode || '-'})</option>`;
-        });
-        
+        if(elementId.includes('filter') || elementId === 'vc_drug') { select.innerHTML = '<option value="">-- เลือกรายการยา --</option>'; } else { select.innerHTML = '<option value="">-- พิมพ์ค้นหายา --</option>'; }
+        data.filter(d => dept === 'ALL' || d.Department === dept || d.Department === 'ALL').forEach(d => { select.innerHTML += `<option value="${d.Drug_ID}">[${d.Drug_ID}] ${d.Drug_Name} (บาร์โค้ด: ${d.Barcode || '-'})</option>`; });
         let newTs = new TomSelect(`#${elementId}`, { create: false, sortField: { field: "text", direction: "asc" } });
-        
-        if(elementId === 'recv_drug') tomSelectRecv = newTs; 
-        if(elementId === 'disp_drug') tomSelectDisp = newTs; 
-        if(elementId === 'filter_in_drug') tomSelectFilterIn = newTs; 
-        if(elementId === 'filter_out_drug') tomSelectFilterOut = newTs; 
-        if(elementId === 'vc_drug') tomSelectVc = newTs; 
-        if(elementId === 'ts_drug') tomSelectTs = newTs;
+        if(elementId === 'recv_drug') tomSelectRecv = newTs; if(elementId === 'disp_drug') tomSelectDisp = newTs; if(elementId === 'filter_in_drug') tomSelectFilterIn = newTs; if(elementId === 'filter_out_drug') tomSelectFilterOut = newTs; if(elementId === 'vc_drug') tomSelectVc = newTs; if(elementId === 'ts_drug') tomSelectTs = newTs;
       });
     }
     
     function handleBarcodeScan(e, dropdownId, nextInputId) {
       if (e.key === 'Enter') {
-        e.preventDefault(); 
-        const code = e.target.value.trim(); 
-        if(!code) return; 
-        let dept = getCurrentDept();
+        e.preventDefault(); const code = e.target.value.trim(); if(!code) return; let dept = getCurrentDept();
         const foundDrug = allDrugsList.find(d => String(d.Barcode) === code);
-        
         if (foundDrug && (dept === 'ALL' || foundDrug.Department === dept || foundDrug.Department === 'ALL')) {
-           let ts = dropdownId === 'recv_drug' ? tomSelectRecv : tomSelectDisp; 
-           if(ts) ts.setValue(foundDrug.Drug_ID);
-           if(dropdownId === 'disp_drug') checkDispenseBalance(); else calculateRecvQty(); 
-           document.getElementById(nextInputId).focus();
-        } else {
-           alert('ไม่พบยาจากบาร์โค้ดนี้ในคลังที่คุณกำลังจัดการ!'); 
-        }
+           let ts = dropdownId === 'recv_drug' ? tomSelectRecv : tomSelectDisp; if(ts) ts.setValue(foundDrug.Drug_ID);
+           if(dropdownId === 'disp_drug') checkDispenseBalance(); else calculateRecvQty(); document.getElementById(nextInputId).focus();
+        } else { alert('ไม่พบยาจากบาร์โค้ดนี้ในคลังที่คุณกำลังจัดการ!'); }
         e.target.value = '';
       }
     }
 
-    // รับยาเข้า (Bulk Receive)
     function calculateRecvQty() {
-      const id = document.getElementById('recv_drug').value;
-      const qty = document.getElementById('recv_qty_pack').value;
-      document.getElementById('recv_pack_size').value = ''; 
-      document.getElementById('recv_total_base').innerText = '0'; 
-      document.getElementById('recv_unit_label').value = '';
+      const id = document.getElementById('recv_drug').value; const qty = document.getElementById('recv_qty_pack').value;
+      document.getElementById('recv_pack_size').value = ''; document.getElementById('recv_total_base').innerText = '0'; document.getElementById('recv_unit_label').value = '';
       if(id) { 
           const d = allDrugsList.find(x => x.Drug_ID === id); 
           if(d) { 
@@ -958,59 +874,27 @@
     
     function addBulkItem(e) {
        e.preventDefault();
-       const drugId = document.getElementById('recv_drug').value; 
-       const reqNo = document.getElementById('recv_req_no').value;
-       
-       if(!reqNo) return alert('กรุณาระบุเลขที่ใบเบิกด้านบนก่อนเริ่มเพิ่มยาครับ'); 
-       if(!drugId) return alert('กรุณาเลือกรายการยา');
-       
-       const drugInfo = allDrugsList.find(x => x.Drug_ID === drugId); 
-       const qtyIn = document.getElementById('recv_total_base').innerText;
-       
+       const drugId = document.getElementById('recv_drug').value; const reqNo = document.getElementById('recv_req_no').value;
+       if(!reqNo) return alert('กรุณาระบุเลขที่ใบเบิกด้านบนก่อนเริ่มเพิ่มยาครับ'); if(!drugId) return alert('กรุณาเลือกรายการยา');
+       const drugInfo = allDrugsList.find(x => x.Drug_ID === drugId); const qtyIn = document.getElementById('recv_total_base').innerText;
        if(Number(qtyIn) <= 0) return alert('จำนวนนับต้องมากกว่า 0');
-       
-       bulkReceiveItems.push({ 
-           drugId: drugId, 
-           drugName: drugInfo.Drug_Name, 
-           lotNo: document.getElementById('recv_lot').value, 
-           expDate: document.getElementById('recv_exp').value, 
-           packQty: document.getElementById('recv_qty_pack').value, 
-           qtyIn: qtyIn, 
-           unit: drugInfo.Unit 
-       });
-       
+       bulkReceiveItems.push({ drugId: drugId, drugName: drugInfo.Drug_Name, lotNo: document.getElementById('recv_lot').value, expDate: document.getElementById('recv_exp').value, packQty: document.getElementById('recv_qty_pack').value, qtyIn: qtyIn, unit: drugInfo.Unit });
        renderBulkTable();
-       
-       document.getElementById('recv_lot').value = ''; 
-       document.getElementById('recv_qty_pack').value = ''; 
+       document.getElementById('recv_lot').value = ''; document.getElementById('recv_qty_pack').value = ''; 
        if(document.getElementById('recv_exp')._flatpickr) document.getElementById('recv_exp')._flatpickr.clear(); 
        if(tomSelectRecv) tomSelectRecv.clear(); 
-       
-       calculateRecvQty(); 
-       document.getElementById('recv_barcode').focus();
+       calculateRecvQty(); document.getElementById('recv_barcode').focus();
     }
     
     function renderBulkTable() {
        const tb = document.getElementById('bulkRecvTableBody');
        if(bulkReceiveItems.length === 0) { 
            tb.innerHTML = '<tr><td colspan="5" class="text-center p-6 text-slate-400 border-dashed border-2 m-4">ยังไม่มีรายการยาในตะกร้า</td></tr>'; 
-           document.getElementById('btnSubmitBulk').disabled = true; 
-           return; 
+           document.getElementById('btnSubmitBulk').disabled = true; return; 
        }
-       document.getElementById('btnSubmitBulk').disabled = false; 
-       tb.innerHTML = '';
-       
+       document.getElementById('btnSubmitBulk').disabled = false; tb.innerHTML = '';
        bulkReceiveItems.forEach((item, index) => { 
-           tb.innerHTML += `<tr class="border-b hover:bg-blue-50">
-               <td class="p-2 text-slate-500 text-center font-bold">${index + 1}</td>
-               <td class="p-2 font-bold text-blue-800">${item.drugName}</td>
-               <td class="p-2 text-xs font-mono">L: ${item.lotNo} <br>E: ${item.expDate}</td>
-               <td class="p-2 text-right font-black text-lg text-slate-700">${item.qtyIn} <span class="text-xs font-normal text-slate-500">${item.unit}</span></td>
-               <td class="p-2 text-center">
-                   <button type="button" onclick="editBulkItem(${index})" class="text-yellow-500 hover:text-yellow-600 font-bold mr-3 text-lg" title="แก้ไข">✏️</button>
-                   <button type="button" onclick="removeBulkItem(${index})" class="text-red-400 hover:text-red-600 font-bold text-lg" title="ลบ">✕</button>
-               </td>
-           </tr>`; 
+           tb.innerHTML += `<tr class="border-b hover:bg-blue-50"><td class="p-2 text-slate-500 text-center font-bold">${index + 1}</td><td class="p-2 font-bold text-blue-800">${item.drugName}</td><td class="p-2 text-xs font-mono">L: ${item.lotNo} <br>E: ${item.expDate}</td><td class="p-2 text-right font-black text-lg text-slate-700">${item.qtyIn} <span class="text-xs font-normal text-slate-500">${item.unit}</span></td><td class="p-2 text-center"><button type="button" onclick="editBulkItem(${index})" class="text-yellow-500 hover:text-yellow-600 font-bold mr-3 text-lg" title="แก้ไข">✏️</button><button type="button" onclick="removeBulkItem(${index})" class="text-red-400 hover:text-red-600 font-bold text-lg" title="ลบ">✕</button></td></tr>`; 
        });
     }
     
@@ -1018,80 +902,41 @@
        const item = bulkReceiveItems[index]; 
        if(tomSelectRecv) tomSelectRecv.setValue(item.drugId); 
        document.getElementById('recv_lot').value = item.lotNo;
-       
        let expEl = document.getElementById('recv_exp'); 
-       if(expEl && expEl._flatpickr) { 
-           expEl._flatpickr.setDate(item.expDate); 
-       } else { 
-           expEl.value = item.expDate; 
-       }
-       
-       document.getElementById('recv_qty_pack').value = item.packQty; 
-       calculateRecvQty(); 
-       
-       bulkReceiveItems.splice(index, 1); 
-       renderBulkTable();
+       if(expEl && expEl._flatpickr) { expEl._flatpickr.setDate(item.expDate); } else { expEl.value = item.expDate; }
+       document.getElementById('recv_qty_pack').value = item.packQty; calculateRecvQty(); bulkReceiveItems.splice(index, 1); renderBulkTable();
     }
 
-    function removeBulkItem(index) { 
-        bulkReceiveItems.splice(index, 1); 
-        renderBulkTable(); 
-    }
+    function removeBulkItem(index) { bulkReceiveItems.splice(index, 1); renderBulkTable(); }
     
     function submitBulkReceive() {
       let dept = getCurrentDept(); 
       if(dept === 'ALL') return alert('กรุณาเลือกคลัง OPD หรือ IPD ที่แถบด้านบนก่อนบันทึกรับยา');
       if(bulkReceiveItems.length === 0) return; 
       if(!confirm(`คุณต้องการบันทึกรับยาทั้งหมด ${bulkReceiveItems.length} รายการ ใช่หรือไม่?`)) return;
-      
       const source = document.getElementById('recv_source').value || 'คลังยาใหญ่';
-      const payload = { 
-          header: { 
-              date: document.getElementById('recv_date').value, 
-              reqType: document.getElementById('recv_req_type').value, 
-              reqNo: document.getElementById('recv_req_no').value, 
-              userId: currentUser.id, 
-              department: dept, 
-              source: source 
-          }, 
-          items: bulkReceiveItems 
-      };
-      
-      const btn = document.getElementById('btnSubmitBulk'); 
-      btn.disabled = true; 
-      btn.innerText = 'กำลังประมวลผล...';
-      
+      const payload = { header: { date: document.getElementById('recv_date').value, reqType: document.getElementById('recv_req_type').value, reqNo: document.getElementById('recv_req_no').value, userId: currentUser.id, department: dept, source: source }, items: bulkReceiveItems };
+      const btn = document.getElementById('btnSubmitBulk'); btn.disabled = true; btn.innerText = 'กำลังประมวลผล...';
       callAPI('receiveDrugsBulk', payload).then(res => {
-        alert(res.message); 
-        btn.disabled = false; 
-        btn.innerText = '✅ ยืนยันบันทึกรับยาทั้งหมดเข้าคลัง';
-        if(res.success) { 
-            document.getElementById('recv_req_no').value = ''; 
-            bulkReceiveItems = []; 
-            renderBulkTable(); 
-        }
+        alert(res.message); btn.disabled = false; btn.innerText = '✅ ยืนยันบันทึกรับยาทั้งหมดเข้าคลัง';
+        if(res.success) { document.getElementById('recv_req_no').value = ''; bulkReceiveItems = []; renderBulkTable(); }
       });
     }
 
-    // จ่ายยาออก (Dispense)
     function checkDispenseBalance() { 
         const drugId = document.getElementById('disp_drug').value; 
         document.getElementById('disp_current_balance').innerText = '...'; 
         document.getElementById('disp_pack_size').value = ''; 
         calculateDispQty(); 
-        
         if(!drugId) return; 
-        
         const drugInfo = allDrugsList.find(d => d.Drug_ID === drugId); 
         if(drugInfo) { 
             document.getElementById('disp_unit_label').innerText = drugInfo.Unit; 
             document.getElementById('disp_unit_label2').innerText = drugInfo.Unit; 
             document.getElementById('disp_pack_size').value = drugInfo.Pack_Size; 
         } 
-        
         let dept = getCurrentDept() === 'ALL' ? currentUser.department : getCurrentDept(); 
         document.getElementById('disp_dept_label').innerText = dept; 
-        
         callAPI('checkCurrentBalance', {drugId: drugId, department: dept}).then(balance => { 
             document.getElementById('disp_current_balance').innerText = balance; 
             if(balance <= 0) document.getElementById('disp_current_balance').classList.replace('text-slate-800', 'text-red-600'); 
@@ -1101,73 +946,41 @@
     }
     
     function calculateDispQty() { 
-        const packQty = document.getElementById('disp_qty_pack').value;
-        const packSize = document.getElementById('disp_pack_size').value; 
+        const packQty = document.getElementById('disp_qty_pack').value; const packSize = document.getElementById('disp_pack_size').value; 
         if(packQty && packSize) document.getElementById('disp_total_base').innerText = Number(packQty) * Number(packSize); 
         else document.getElementById('disp_total_base').innerText = '0'; 
     }
     
     function toggleDestText() { 
         const v = document.getElementById('disp_dest_type').value; 
-        if(v === 'หน่วยงานอื่นใน รพ.' || v === 'รพ.เครือข่าย') { 
-            document.getElementById('disp_dest_text').classList.remove('hidden'); 
-            document.getElementById('disp_dest_text').required = true; 
-        } else { 
-            document.getElementById('disp_dest_text').classList.add('hidden'); 
-            document.getElementById('disp_dest_text').required = false; 
-        } 
+        if(v === 'หน่วยงานอื่นใน รพ.' || v === 'รพ.เครือข่าย') { document.getElementById('disp_dest_text').classList.remove('hidden'); document.getElementById('disp_dest_text').required = true; } 
+        else { document.getElementById('disp_dest_text').classList.add('hidden'); document.getElementById('disp_dest_text').required = false; } 
     }
     
     function submitDispenseForm(e) { 
-        e.preventDefault(); 
-        let dept = getCurrentDept(); 
+        e.preventDefault(); let dept = getCurrentDept(); 
         if(dept === 'ALL') return alert('กรุณาเลือกคลัง OPD หรือ IPD ที่แถบด้านบนก่อนตัดสต๊อก!'); 
-        
-        const drugId = document.getElementById('disp_drug').value; 
-        const qtyOut = document.getElementById('disp_total_base').innerText; 
-        
-        if(!drugId) return alert("กรุณาเลือกรายการยา!"); 
-        if(Number(qtyOut) <= 0) return alert("ยอดตัดสต๊อกต้องมากกว่า 0"); 
-        
-        const destType = document.getElementById('disp_dest_type').value; 
-        const destText = document.getElementById('disp_dest_text').value; 
+        const drugId = document.getElementById('disp_drug').value; const qtyOut = document.getElementById('disp_total_base').innerText; 
+        if(!drugId) return alert("กรุณาเลือกรายการยา!"); if(Number(qtyOut) <= 0) return alert("ยอดตัดสต๊อกต้องมากกว่า 0"); 
+        const destType = document.getElementById('disp_dest_type').value; const destText = document.getElementById('disp_dest_text').value; 
         const destination = (destType === 'หน่วยงานอื่นใน รพ.' || destType === 'รพ.เครือข่าย') ? `${destType} (${destText})` : destType; 
-        
-        const btn = document.getElementById('btnSubmitDisp'); 
-        btn.innerText = 'กำลังประมวลผล...'; 
-        btn.disabled = true; 
-        
-        const data = { 
-            date: document.getElementById('disp_date').value, 
-            drugId: drugId, 
-            lotNo: document.getElementById('disp_lot').value, 
-            expDate: document.getElementById('disp_exp').value, 
-            qtyOut: qtyOut, 
-            userId: currentUser.id, 
-            department: dept, 
-            destination: destination 
-        }; 
-        
+        const btn = document.getElementById('btnSubmitDisp'); btn.innerText = 'กำลังประมวลผล...'; btn.disabled = true; 
+        const data = { date: document.getElementById('disp_date').value, drugId: drugId, lotNo: document.getElementById('disp_lot').value, expDate: document.getElementById('disp_exp').value, qtyOut: qtyOut, userId: currentUser.id, department: dept, destination: destination }; 
         callAPI('dispenseDrug', data).then(res => { 
-            alert(res.message); 
-            btn.innerText = '📤 ยืนยันตัดสต๊อก'; 
-            btn.disabled = false; 
+            alert(res.message); btn.innerText = '📤 ยืนยันตัดสต๊อก'; btn.disabled = false; 
             if(res.success) { 
-                document.getElementById('disp_qty_pack').value = ''; 
-                document.getElementById('disp_lot').value = ''; 
+                document.getElementById('disp_qty_pack').value = ''; document.getElementById('disp_lot').value = ''; 
                 if(document.getElementById('disp_exp')._flatpickr) document.getElementById('disp_exp')._flatpickr.clear(); 
-                if(tomSelectDisp) tomSelectDisp.clear(); 
-                document.getElementById('disp_dest_text').value = ''; 
-                document.getElementById('disp_current_balance').innerText = '-'; 
-                document.getElementById('disp_pack_size').value = ''; 
-                document.getElementById('disp_total_base').innerText = '0'; 
-                document.getElementById('disp_unit_label').innerText = ''; 
-                document.getElementById('disp_unit_label2').innerText = ''; 
+                if(tomSelectDisp) tomSelectDisp.clear(); document.getElementById('disp_dest_text').value = ''; 
+                document.getElementById('disp_current_balance').innerText = '-'; document.getElementById('disp_pack_size').value = ''; 
+                document.getElementById('disp_total_base').innerText = '0'; document.getElementById('disp_unit_label').innerText = ''; document.getElementById('disp_unit_label2').innerText = ''; 
             } 
         }); 
     }
 
-    // สร้างใบขอเบิก (Auto Requisition)
+    // =========================================================
+    // สร้างใบขอเบิกยา (ปรับปรุงเป็น Pack)
+    // =========================================================
     function loadAutoRequisition() {
         let dept = getCurrentDept();
         if(dept === 'ALL') return alert("กรุณาเลือกคลัง (OPD/IPD) ที่ต้องการสร้างใบเบิกด้านบนก่อนครับ");
@@ -1191,8 +1004,7 @@
                         let suggestPacks = maxPacks - Math.floor(currentPacks); 
                         
                         if (suggestPacks > 0) {
-                            let suggestBase = suggestPacks * packSize;
-                            autoReqData.push({ ...d, SuggestPacks: suggestPacks, SuggestBase: suggestBase, ReqQty: suggestBase });
+                            autoReqData.push({ ...d, SuggestPacks: suggestPacks, ReqQty: suggestPacks });
                         }
                     }
                 }
@@ -1215,17 +1027,28 @@
             let minBase = Number(r.Min) * Number(r.Pack_Size);
             let balClass = Number(r.Balance) <= minBase ? 'text-red-600 font-black' : 'text-slate-800 font-bold';
             let warnIcon = Number(r.Balance) <= minBase ? '🚨' : '';
+            
+            // แสดงผลยอดคงเหลือเป็นเม็ด พร้อมบอกจำนวนแพ็คคร่าวๆ
+            let balPacks = (Number(r.Balance) / Number(r.Pack_Size)).toFixed(1).replace('.0','');
+            let balanceDisplay = `${r.Balance} <span class="text-xs text-slate-500 block font-normal">(${balPacks} แพ็ค)</span>`;
+
             tb.innerHTML += `<tr class="border-b hover:bg-slate-50" id="req_row_${i}">
                     <td class="p-3 text-xs text-slate-500 font-mono">${r.Drug_ID}</td>
                     <td class="p-3 font-bold text-slate-800">${warnIcon} ${r.Drug_Name}</td>
-                    <td class="p-3 text-center ${balClass} text-lg">${r.Balance}</td>
+                    <td class="p-3 text-center ${balClass} text-lg leading-tight">${balanceDisplay}</td>
                     <td class="p-3 text-center text-xs font-medium text-slate-500">${r.Min} / ${r.Max}</td>
-                    <td class="p-3 text-center text-blue-700 font-bold bg-blue-50"><span class="block text-lg">${r.SuggestBase}</span><span class="text-xs text-slate-500 font-normal">(${r.SuggestPacks} แพ็ค)</span></td>
-                    <td class="p-3 text-center bg-teal-50 no-print-input border-x border-teal-100">
-                        <input type="number" step="${r.Pack_Size}" value="${r.ReqQty}" onchange="updateReqQty(${i}, this.value)" class="w-full text-center border-b-2 border-teal-400 bg-transparent py-1 font-black text-teal-800 text-lg outline-none">
-                        <span class="text-[10px] text-teal-600 block mt-1">บรรจุ ${r.Pack_Size}</span>
+                    <td class="p-3 text-center text-blue-700 font-bold bg-blue-50">
+                        <span class="block text-xl">${r.SuggestPacks}</span>
                     </td>
-                    <td class="p-3 text-center print-only-display hidden text-teal-800 font-black text-lg">${r.ReqQty}</td>
+                    <td class="p-3 text-center bg-teal-50 no-print-input border-x border-teal-100">
+                        <div class="flex items-center justify-center gap-1">
+                            <input type="number" step="1" min="1" value="${r.ReqQty}" onchange="updateReqQty(${i}, this.value)" class="w-16 text-center border-b-2 border-teal-400 bg-transparent py-1 font-black text-teal-800 text-xl outline-none">
+                            <span class="text-xs text-teal-700 font-bold">x ${r.Pack_Size}</span>
+                        </div>
+                    </td>
+                    <td class="p-3 text-center print-only-display hidden text-teal-800 font-black text-lg">
+                        ${r.ReqQty} x ${r.Pack_Size}
+                    </td>
                     <td class="p-3 text-center text-xs font-bold text-slate-600">${r.Unit}</td>
                     <td class="p-3 text-center no-print"><button onclick="removeReqItem(${i})" class="text-red-400 hover:text-red-600 text-lg font-bold" title="ลบทิ้ง">✕</button></td>
                 </tr>`;
@@ -1235,7 +1058,9 @@
     function updateReqQty(index, val) { 
         autoReqData[index].ReqQty = Number(val); 
         let row = document.getElementById(`req_row_${index}`); 
-        if(row) row.querySelector('.print-only-display').innerText = val; 
+        if(row) {
+            row.querySelector('.print-only-display').innerText = `${val} x ${autoReqData[index].Pack_Size}`;
+        }
     }
     
     function removeReqItem(index) { 
@@ -1530,7 +1355,7 @@
             
             let m=''; 
             if(d.belowMinList.length===0) m='<li class="text-green-600 font-bold p-3 bg-green-50 rounded border border-green-100">✅ ยอดเยี่ยม! สต๊อกเพียงพอทุกรายการ</li>'; 
-            else d.belowMinList.forEach(x=>m+=`<li class="border-b py-3 text-red-800"><strong>${x.name}</strong> <br><span class="text-red-600 font-bold">คงเหลือ: ${x.bal} ${x.unit}</span> <span class="text-slate-400 text-xs">(จุดสั่งซื้อ: ${x.min} กล่อง)</span></li>`); 
+            else d.belowMinList.forEach(x=>m+=`<li class="border-b py-3 text-red-800"><strong>${x.name}</strong> <br><span class="text-red-600 font-bold">คงเหลือ: ${x.bal} ${x.unit}</span> <span class="text-slate-400 text-xs">(จุดสั่งซื้อ: ${x.min} แพ็ค)</span></li>`); 
             document.getElementById('dash_min_list').innerHTML=m; 
             
             let e=''; 
