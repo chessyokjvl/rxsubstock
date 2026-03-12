@@ -54,14 +54,25 @@
          <p class="text-gray-500 text-sm mt-2 font-medium">รพ.จิตเวชเลยราชนครินทร์</p>
       </div>
       <form id="loginForm" onsubmit="handleLogin(event)">
-        <div class="mb-4"><label class="block text-gray-700 text-sm font-bold mb-2">ชื่อผู้ใช้งาน</label><input type="text" id="username" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none" required></div>
-        <div class="mb-6"><label class="block text-gray-700 text-sm font-bold mb-2">รหัสผ่าน</label><input type="password" id="password" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none" required></div>
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">ชื่อผู้ใช้งาน</label>
+            <input type="text" id="username" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none" required>
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2">รหัสผ่าน</label>
+            <input type="password" id="password" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 outline-none" required>
+        </div>
         <div id="loginError" class="text-red-500 text-sm mb-4 hidden text-center bg-red-50 p-2 rounded"></div>
-        <button type="submit" id="loginBtn" class="w-full bg-green-700 text-white font-bold py-3 rounded-lg hover:bg-green-800 transition flex justify-center items-center shadow-md"><span id="loginBtnText">เข้าสู่ระบบ</span><div id="loginSpinner" class="loader ml-2 hidden"></div></button>
+        <button type="submit" id="loginBtn" class="w-full bg-green-700 text-white font-bold py-3 rounded-lg hover:bg-green-800 transition flex justify-center items-center shadow-md">
+            <span id="loginBtnText">เข้าสู่ระบบ</span>
+            <div id="loginSpinner" class="loader ml-2 hidden"></div>
+        </button>
       </form>
       <div class="mt-6 text-center border-t pt-6">
         <p class="text-xs text-gray-500 mb-3">สำหรับบุคลากรทั่วไป (ดูเฉพาะภาพรวม)</p>
-        <button type="button" onclick="loginAsGuest()" class="w-full bg-slate-100 text-slate-700 font-bold py-2.5 rounded-lg hover:bg-slate-200 transition shadow-sm border border-slate-200">👁️ เข้าชมแบบผู้เยี่ยมชม (Guest)</button>
+        <button type="button" onclick="loginAsGuest()" class="w-full bg-slate-100 text-slate-700 font-bold py-2.5 rounded-lg hover:bg-slate-200 transition shadow-sm border border-slate-200">
+            👁️ เข้าชมแบบผู้เยี่ยมชม (Guest)
+        </button>
       </div>
     </div>
   </div>
@@ -85,6 +96,7 @@
         
         <div id="operationalMenu">
           <p class="px-3 text-[10px] text-green-300 mb-1 mt-4 uppercase tracking-wider font-bold">ปฏิบัติงาน</p>
+          <a href="#" onclick="switchView('opening-balance', 'บันทึกยอดยกมาตั้งต้น')" class="nav-menu-item for-admin block px-3 py-2.5 rounded-md hover:bg-amber-600 bg-amber-700 transition shadow-sm mb-1">📦 บันทึกยอดยกมา</a>
           <a href="#" onclick="switchView('receive', 'บันทึกรับยาเข้า (Bulk)')" class="nav-menu-item for-admin block px-3 py-2.5 rounded-md hover:bg-blue-700 bg-blue-800 transition shadow-sm mb-1">📥 บันทึกรับยาเข้า</a>
           <a href="#" onclick="switchView('dispense', 'บันทึกจ่ายยาออก')" class="nav-menu-item for-user block px-3 py-2.5 rounded-md hover:bg-orange-600 bg-orange-700 transition shadow-sm mb-1">📤 บันทึกจ่ายยาออก</a>
           <a href="#" onclick="switchView('takestock', 'เช็คสต๊อก (Take Stock)')" class="nav-menu-item for-admin block px-3 py-2.5 rounded-md hover:bg-purple-600 bg-purple-700 transition shadow-sm mb-1">🔍 เช็คสต๊อก</a>
@@ -168,114 +180,100 @@
           </div>
         </div>
 
-        <div id="view-auto-req" class="view-section hidden">
-          <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col h-[calc(100vh-8rem)]">
-             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3 border-b pb-3">
-                <div>
-                   <h3 class="text-lg font-bold text-teal-800">📝 สร้างรายการขอเบิกยาจากคลังใหญ่</h3>
-                   <p class="text-xs text-slate-500 mt-1">กดปุ่มรีเฟรชได้เรื่อยๆ ระบบจะคำนวณจำนวนแพ็คที่ต้องเบิกให้อัตโนมัติ (ไม่เกิน Max)</p>
-                </div>
-                <div class="flex gap-2 w-full md:w-auto">
-                   <button onclick="exportToExcel('reqTableExport', 'ใบขอเบิกยา')" class="flex-1 md:flex-none bg-green-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-700 shadow-sm font-medium">📊 Export</button>
-                   <button onclick="printRequisition()" class="flex-1 md:flex-none bg-slate-800 text-white px-3 py-2 rounded-lg text-sm hover:bg-slate-900 shadow-sm font-medium">🖨️ พิมพ์ใบเบิก</button>
-                </div>
-             </div>
-             
-             <div class="mb-4 p-4 bg-teal-50 border border-teal-100 rounded-lg flex flex-col md:flex-row gap-4 items-center justify-between">
-                <div class="text-sm text-teal-800 font-medium">
-                   🎯 สแกนคลัง <b><span id="auto_req_dept_display"></span></b> และคำนวณแพ็คเบิกอัตโนมัติ
-                </div>
-                <button onclick="loadAutoRequisition()" class="w-full md:w-auto bg-teal-600 text-white px-5 py-2.5 rounded-lg text-sm hover:bg-teal-700 shadow-md font-bold transition">
-                   🔄 ประมวลผลสร้างใบเบิกใหม่
-                </button>
-             </div>
+        <div id="view-opening-balance" class="view-section hidden">
+            <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border-t-4 border-amber-500 flex flex-col h-[calc(100vh-8rem)]">
+              <h3 class="text-lg md:text-xl font-bold text-amber-800 mb-4 border-b pb-2 flex items-center"><span class="text-2xl mr-2">📦</span> บันทึกยอดยกมา (Opening Balance)</h3>
+              
+              <div class="bg-cyan-50 text-cyan-800 p-3 rounded-lg border border-cyan-200 mb-4 text-sm font-medium">
+                 <strong>คำแนะนำ:</strong> การบันทึกยอดยกมา จะนำยาเข้าสู่คลังที่คุณกำลังเลือกอยู่ (<strong><span id="ob_dept_display"></span></strong>) ทันที เพื่อใช้ตั้งต้นสต๊อก
+              </div>
+              
+              <div class="bg-slate-50 p-4 rounded-lg border mb-4">
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">วันที่บันทึกยอดยกมา</label>
+                        <input type="text" id="ob_date" class="w-full px-3 py-2.5 border rounded-lg bg-white date-today shadow-sm focus:ring-2 focus:ring-amber-400 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">ระบุปีงบประมาณ / เลขอ้างอิง</label>
+                        <input type="text" id="ob_ref_no" class="w-full px-3 py-2.5 border rounded-lg shadow-sm focus:ring-2 focus:ring-amber-400 outline-none" value="ยอดยกมาต้นปี">
+                    </div>
+                 </div>
+              </div>
+              
+              <div class="bg-amber-50 p-4 rounded-lg border border-amber-200 mb-4 shadow-inner">
+                 <h4 class="text-sm font-bold text-amber-800 mb-3 flex items-center">
+                    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    คีย์รายการสินค้าคงเหลือ
+                 </h4>
+                 <form id="addOpeningBalanceForm" onsubmit="addObItem(event)">
+                   <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                      <div class="md:col-span-4">
+                         <label class="block text-xs font-bold text-amber-700 mb-1">รายการยา (ค้นหา/พิมพ์)</label>
+                         <div class="w-full">
+                             <select id="ob_drug" onchange="calcObQty()"><option value="">-- พิมพ์ค้นหายา --</option></select>
+                         </div>
+                      </div>
+                      
+                      <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-amber-800 mb-1">จำนวนนับ (แพ็ค)</label>
+                        <input type="number" step="any" id="ob_qty_pack" class="w-full px-3 py-2 border border-amber-300 rounded font-black text-amber-700 text-center focus:ring-2 focus:ring-amber-500 outline-none shadow-inner" oninput="calcObQty()" required>
+                        <input type="hidden" id="ob_pack_size">
+                        <input type="hidden" id="ob_unit_label">
+                      </div>
 
-             <div class="overflow-x-auto flex-1 border border-slate-200 rounded-lg">
-                <table class="w-full text-left text-sm border-collapse whitespace-nowrap" id="reqTableExport">
-                   <thead class="bg-slate-100 sticky top-0 shadow-sm z-10">
-                      <tr>
-                         <th class="p-3 border-b text-slate-600 font-semibold w-16">รหัสยา</th>
-                         <th class="p-3 border-b text-slate-600 font-semibold">ชื่อยา</th>
-                         <th class="p-3 border-b text-center text-slate-600 font-semibold">คงเหลือ</th>
-                         <th class="p-3 border-b text-center text-slate-600 font-semibold">Min/Max<br><span class="text-[10px] font-normal">(แพ็ค)</span></th>
-                         <th class="p-3 border-b text-center text-blue-700 font-bold bg-blue-50">แนะนำเบิก<br><span class="text-[10px] font-normal text-slate-500">(แพ็ค)</span></th>
-                         <th class="p-3 border-b text-center text-teal-800 font-bold bg-teal-50 w-32">เบิกจริง (แก้ไขได้)<br><span class="text-[10px] font-normal text-teal-600">(แพ็ค x บรรจุ)</span></th>
-                         <th class="p-3 border-b text-center text-slate-600 font-semibold">หน่วย</th>
-                         <th class="p-3 border-b text-center no-print">ลบ</th>
-                      </tr>
+                      <div class="md:col-span-2">
+                         <label class="block text-xs font-bold text-slate-600 mb-1">ราคา/หน่วย (บาท)</label>
+                         <input type="number" step="0.01" id="ob_unit_price" class="w-full px-3 py-2 border rounded bg-slate-100 text-slate-500 text-right font-medium" readonly>
+                      </div>
+
+                      <div class="md:col-span-2">
+                         <label class="block text-xs font-bold text-slate-600 mb-1">มูลค่ารวม (บาท)</label>
+                         <input type="text" id="ob_total_price" class="w-full px-3 py-2 border rounded bg-slate-100 text-slate-800 text-right font-bold" readonly placeholder="0.00">
+                      </div>
+
+                      <div class="md:col-span-2">
+                         <label class="block text-xs font-bold text-red-600 mb-1">วันหมดอายุ (Exp)</label>
+                         <input type="text" id="ob_exp" class="w-full px-3 py-2 border border-red-300 rounded bg-white date-empty focus:ring-2 focus:ring-red-400 outline-none" placeholder="วว/ดด/ปปปป" required>
+                      </div>
+                      
+                      <div class="md:col-span-3">
+                         <label class="block text-xs font-bold text-slate-600 mb-1">เลข Lot (ถ้ามี)</label>
+                         <input type="text" id="ob_lot" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-amber-400 outline-none">
+                      </div>
+
+                      <div class="md:col-span-7">
+                         <label class="block text-xs font-bold text-slate-600 mb-1">หมายเหตุ</label>
+                         <input type="text" id="ob_note" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-amber-400 outline-none" value="บันทึกยอดยกมาตั้งต้น">
+                      </div>
+
+                      <div class="md:col-span-2 mt-2">
+                         <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-lg shadow-md transition">นำลงรายการ</button>
+                      </div>
+                   </div>
+                 </form>
+              </div>
+
+              <div class="flex-1 overflow-x-auto border rounded-lg mb-4 bg-white">
+                <table class="w-full text-left text-sm border-collapse whitespace-nowrap">
+                   <thead class="bg-slate-100 sticky top-0 z-10">
+                     <tr>
+                        <th class="p-3 border-b w-10 text-center">#</th>
+                        <th class="p-3 border-b">รายการสินค้า</th>
+                        <th class="p-3 border-b">Lot/Exp</th>
+                        <th class="p-3 border-b text-center">หมายเหตุ</th>
+                        <th class="p-3 border-b text-right">จำนวนสุทธิ</th>
+                        <th class="p-3 border-b text-center">จัดการ</th>
+                     </tr>
                    </thead>
-                   <tbody id="reqTableBody">
-                      <tr><td colspan="8" class="text-center p-10 text-slate-400 border-dashed border-2 m-4">กดปุ่ม "ประมวลผลสร้างใบเบิกใหม่" ด้านบนเพื่อเริ่มต้น</td></tr>
+                   <tbody id="obTableBody">
+                     <tr><td colspan="6" class="text-center p-8 text-slate-400 border-dashed border-2 m-4">ยังไม่มีรายการยอดยกมา</td></tr>
                    </tbody>
                 </table>
-             </div>
-          </div>
-        </div>
-
-        <div id="view-inventory-report" class="view-section hidden">
-          <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border flex flex-col h-[calc(100vh-8rem)]">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
-               <h3 class="text-lg font-bold text-slate-800">📦 รายงานยาคงคลังปัจจุบัน</h3>
-               <div class="flex gap-2 w-full md:w-auto">
-                 <button onclick="exportToExcel('invReportTable', 'รายงานยาคงคลัง')" class="flex-1 md:flex-none bg-green-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-700 shadow-sm">📊 Export</button>
-                 <button onclick="printInventoryReport()" class="flex-1 md:flex-none bg-slate-800 text-white px-3 py-2 rounded-lg text-sm hover:bg-slate-900 shadow-sm">🖨️ พิมพ์</button>
-               </div>
+              </div>
+              
+              <button onclick="submitOpeningBalance()" id="btnSubmitOb" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 text-lg rounded-xl shadow-lg transition disabled:bg-slate-300 disabled:cursor-not-allowed">✅ ยืนยันบันทึกยอดยกมาเข้าคลัง</button>
             </div>
-            <div class="mb-4"><input type="text" id="inv_search" class="w-full border px-4 py-2.5 rounded-lg text-sm focus:ring-2 focus:ring-green-500 outline-none" placeholder="🔍 ค้นหาชื่อยา หรือ รหัสยา..." onkeyup="applyInvFilter()"></div>
-            <div class="overflow-x-auto flex-1 border rounded-lg">
-              <table class="w-full text-left text-sm border-collapse whitespace-nowrap" id="invReportTable">
-                <thead class="bg-slate-100 sticky top-0 shadow-sm z-10 select-none">
-                  <tr>
-                    <th class="p-3 border-b cursor-pointer hover:bg-slate-200" onclick="sortInvReport('Drug_ID')">รหัสยา <span id="sort_Drug_ID" class="text-xs text-slate-400"></span></th>
-                    <th class="p-3 border-b cursor-pointer hover:bg-slate-200" onclick="sortInvReport('Drug_Name')">ชื่อยา <span id="sort_Drug_Name" class="text-xs text-slate-400"></span></th>
-                    <th class="p-3 border-b text-right cursor-pointer hover:bg-slate-200" onclick="sortInvReport('Balance')">คงเหลือสุทธิ <span id="sort_Balance" class="text-xs text-slate-400"></span></th>
-                    <th class="p-3 border-b text-center">หน่วย (บรรจุ)</th>
-                    <th class="p-3 border-b text-center">Min / Max <span class="text-[10px] block font-normal">(แพ็ค)</span></th>
-                    <th class="p-3 border-b text-center cursor-pointer hover:bg-slate-200" onclick="sortInvReport('Earliest_Exp')">หมดอายุเร็วสุด <span id="sort_Earliest_Exp" class="text-xs text-slate-400"></span></th>
-                  </tr>
-                </thead>
-                <tbody id="invTableBody"><tr><td colspan="6" class="text-center p-6 text-slate-500">กำลังโหลด...</td></tr></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <div id="view-virtual-stockcard" class="view-section hidden">
-          <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border flex flex-col h-[calc(100vh-8rem)]">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
-               <h3 class="text-lg font-bold text-slate-800">💳 Stock Card เสมือนจริง</h3>
-               <div class="flex gap-2 w-full md:w-auto">
-                 <button onclick="exportToExcel('vcTableExport', 'Stock_Card')" class="flex-1 md:flex-none bg-green-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-700 shadow-sm disabled:bg-slate-300" id="btnExportVc">📊 Export</button>
-                 <button onclick="printVirtualStockCard()" class="flex-1 md:flex-none bg-slate-800 text-white px-3 py-2 rounded-lg text-sm hover:bg-slate-900 shadow-sm disabled:bg-slate-300" id="btnPrintVc">🖨️ พิมพ์</button>
-               </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4 p-4 bg-slate-50 border rounded-lg">
-              <div class="md:col-span-2"><label class="block text-xs font-bold text-slate-700 mb-1">เลือกรายการยา</label><select id="vc_drug"><option value="">-- กำลังโหลด --</option></select></div>
-              <div><label class="block text-xs text-slate-600 mb-1">ตั้งแต่วันที่</label><input type="text" id="vc_start_date" class="w-full px-3 py-2 border rounded bg-white"></div>
-              <div><label class="block text-xs text-slate-600 mb-1">ถึงวันที่</label><input type="text" id="vc_end_date" class="w-full px-3 py-2 border rounded bg-white"></div>
-              <div class="md:col-span-2"><label class="block text-xs text-slate-600 mb-1">รูปแบบเอกสาร</label><select id="vc_req_type" class="w-full px-3 py-2 border rounded"><option value="ALL">ทั้งหมด (เบิกจริง + ฉุกเฉิน)</option><option value="REAL">เฉพาะใบเบิกจริง</option><option value="EMERGENCY">เฉพาะเบิกฉุกเฉิน</option></select></div>
-              <div class="md:col-span-2 flex items-end"><button onclick="generateVirtualStockCard()" class="w-full bg-blue-600 text-white font-bold py-2 rounded shadow-sm hover:bg-blue-700">🔍 ค้นหาประวัติ</button></div>
-            </div>
-            
-            <div id="vc_header_info" class="hidden mb-3 p-4 border border-slate-200 rounded-lg bg-white shadow-sm">
-               <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 text-sm">
-                  <div class="col-span-2"><strong>ชื่อยา:</strong> <span id="vc_info_name" class="text-blue-800 font-bold"></span></div>
-                  <div><strong>บาร์โค้ด:</strong> <span id="vc_info_barcode"></span></div>
-                  <div><strong>บรรจุ:</strong> <span id="vc_info_pack"></span> <span id="vc_info_unit"></span></div>
-                  <div class="text-red-600"><strong>Min (แพ็ค):</strong> <span id="vc_info_min"></span></div>
-                  <div class="text-green-700"><strong>Max (แพ็ค):</strong> <span id="vc_info_max"></span></div>
-               </div>
-            </div>
-
-            <div class="overflow-x-auto flex-1 border rounded-lg bg-white">
-              <table class="w-full text-left text-sm border-collapse whitespace-nowrap" id="vcTableExport">
-                <thead class="bg-slate-100 sticky top-0 shadow-sm z-10">
-                  <tr><th class="p-3 border-b">วันที่</th><th class="p-3 border-b">เอกสารอ้างอิง</th><th class="p-3 border-b">Lot/Exp</th><th class="p-3 border-b text-right text-blue-700">รับ</th><th class="p-3 border-b text-right text-orange-700">จ่าย</th><th class="p-3 border-b text-right font-bold">คงเหลือ</th><th class="p-3 border-b">หมายเหตุ (จาก/ไป)</th></tr>
-                </thead>
-                <tbody id="vcTableBody"><tr><td colspan="7" class="text-center p-10 text-slate-400">เลือกระบุข้อมูลด้านบนแล้วกด "ค้นหาประวัติ"</td></tr></tbody>
-              </table>
-            </div>
-          </div>
         </div>
 
         <div id="view-receive" class="view-section hidden">
@@ -651,7 +649,7 @@
         try {
             const response = await fetch(GAS_WEB_APP_URL, { 
                 method: 'POST', 
-                redirect: 'follow',
+                redirect: 'follow', 
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
                 body: JSON.stringify({ action: action, payload: payload }) 
             });
@@ -666,12 +664,13 @@
 
     let currentUser = null;
     let allDrugsList = [];
-    let tomSelectRecv = null, tomSelectDisp = null, tomSelectFilterIn = null, tomSelectFilterOut = null, tomSelectVc = null, tomSelectTs = null;
+    let tomSelectRecv = null, tomSelectDisp = null, tomSelectFilterIn = null, tomSelectFilterOut = null, tomSelectVc = null, tomSelectTs = null, tomSelectOb = null;
     let drugModalInstance = null, updateReqModalInstance = null, tsAdjustModalInstance = null, tsAdjustInModalInstance = null;
     let rawHistoryIn = [], rawHistoryOut = []; 
     let filteredHistoryIn = [], filteredHistoryOut = []; 
     let tsInventoryList = []; 
     let bulkReceiveItems = []; 
+    let obItems = []; // Array สำหรับเก็บรายการยอดยกมา
     let invReportData = []; 
     let vcRawData = null; 
     let autoReqData = [];
@@ -807,6 +806,11 @@
 
       if (v === 'dashboard') loadDashboardData();
       if (v === 'drugs') loadDrugsData();
+      if (v === 'opening-balance') { 
+          loadDrugsForTomSelect('ob_drug'); 
+          renderObTable();
+          document.getElementById('ob_dept_display').innerText = getCurrentDept() === 'ALL' ? 'กรุณาเลือกคลังด้านบน' : getCurrentDept();
+      }
       if (v === 'receive') { loadDrugsForTomSelect('recv_drug'); renderBulkTable(); }
       if (v === 'dispense') loadDrugsForTomSelect('disp_drug');
       if (v === 'history-in') { loadDrugsForTomSelect('filter_in_drug'); loadHistoryIn(); }
@@ -838,12 +842,26 @@
       callAPI('getDrugsList').then(data => {
         allDrugsList = data; const select = document.getElementById(elementId);
         let tsInstance = null; let dept = getCurrentDept();
-        if(elementId === 'recv_drug') tsInstance = tomSelectRecv; if(elementId === 'disp_drug') tsInstance = tomSelectDisp; if(elementId === 'filter_in_drug') tsInstance = tomSelectFilterIn; if(elementId === 'filter_out_drug') tsInstance = tomSelectFilterOut; if(elementId === 'vc_drug') tsInstance = tomSelectVc; if(elementId === 'ts_drug') tsInstance = tomSelectTs;
+        if(elementId === 'recv_drug') tsInstance = tomSelectRecv; 
+        if(elementId === 'disp_drug') tsInstance = tomSelectDisp; 
+        if(elementId === 'filter_in_drug') tsInstance = tomSelectFilterIn; 
+        if(elementId === 'filter_out_drug') tsInstance = tomSelectFilterOut; 
+        if(elementId === 'vc_drug') tsInstance = tomSelectVc; 
+        if(elementId === 'ts_drug') tsInstance = tomSelectTs;
+        if(elementId === 'ob_drug') tsInstance = tomSelectOb; // สำหรับเมนูยอดยกมา
+        
         if(tsInstance !== null) { tsInstance.destroy(); }
         if(elementId.includes('filter') || elementId === 'vc_drug') { select.innerHTML = '<option value="">-- เลือกรายการยา --</option>'; } else { select.innerHTML = '<option value="">-- พิมพ์ค้นหายา --</option>'; }
         data.filter(d => dept === 'ALL' || d.Department === dept || d.Department === 'ALL').forEach(d => { select.innerHTML += `<option value="${d.Drug_ID}">[${d.Drug_ID}] ${d.Drug_Name} (บาร์โค้ด: ${d.Barcode || '-'})</option>`; });
         let newTs = new TomSelect(`#${elementId}`, { create: false, sortField: { field: "text", direction: "asc" } });
-        if(elementId === 'recv_drug') tomSelectRecv = newTs; if(elementId === 'disp_drug') tomSelectDisp = newTs; if(elementId === 'filter_in_drug') tomSelectFilterIn = newTs; if(elementId === 'filter_out_drug') tomSelectFilterOut = newTs; if(elementId === 'vc_drug') tomSelectVc = newTs; if(elementId === 'ts_drug') tomSelectTs = newTs;
+        
+        if(elementId === 'recv_drug') tomSelectRecv = newTs; 
+        if(elementId === 'disp_drug') tomSelectDisp = newTs; 
+        if(elementId === 'filter_in_drug') tomSelectFilterIn = newTs; 
+        if(elementId === 'filter_out_drug') tomSelectFilterOut = newTs; 
+        if(elementId === 'vc_drug') tomSelectVc = newTs; 
+        if(elementId === 'ts_drug') tomSelectTs = newTs;
+        if(elementId === 'ob_drug') tomSelectOb = newTs;
       });
     }
     
@@ -851,14 +869,141 @@
       if (e.key === 'Enter') {
         e.preventDefault(); const code = e.target.value.trim(); if(!code) return; let dept = getCurrentDept();
         const foundDrug = allDrugsList.find(d => String(d.Barcode) === code);
+        
         if (foundDrug && (dept === 'ALL' || foundDrug.Department === dept || foundDrug.Department === 'ALL')) {
-           let ts = dropdownId === 'recv_drug' ? tomSelectRecv : tomSelectDisp; if(ts) ts.setValue(foundDrug.Drug_ID);
+           let ts = dropdownId === 'recv_drug' ? tomSelectRecv : tomSelectDisp; 
+           if(ts) ts.setValue(foundDrug.Drug_ID);
            if(dropdownId === 'disp_drug') checkDispenseBalance(); else calculateRecvQty(); document.getElementById(nextInputId).focus();
         } else { alert('ไม่พบยาจากบาร์โค้ดนี้ในคลังที่คุณกำลังจัดการ!'); }
         e.target.value = '';
       }
     }
 
+    // ==========================================
+    // 📦 บันทึกยอดยกมา (Opening Balance)
+    // ==========================================
+    function calcObQty() {
+        const id = document.getElementById('ob_drug').value;
+        const qtyPack = document.getElementById('ob_qty_pack').value;
+        
+        document.getElementById('ob_pack_size').value = '';
+        document.getElementById('ob_unit_label').value = '';
+        document.getElementById('ob_unit_price').value = '0';
+        document.getElementById('ob_total_price').value = '0';
+
+        if(id) {
+            const d = allDrugsList.find(x => x.Drug_ID === id);
+            if(d) {
+                document.getElementById('ob_pack_size').value = d.Pack_Size;
+                document.getElementById('ob_unit_label').innerText = d.Unit;
+                document.getElementById('ob_unit_price').value = d.Unit_Price;
+                
+                if(qtyPack) {
+                    let totalBase = Number(d.Pack_Size) * Number(qtyPack);
+                    let totalPrice = totalBase * Number(d.Unit_Price);
+                    document.getElementById('ob_total_price').value = totalPrice.toLocaleString('th-TH', {minimumFractionDigits: 2});
+                }
+            }
+        }
+    }
+
+    function addObItem(e) {
+        e.preventDefault();
+        const drugId = document.getElementById('ob_drug').value;
+        if(!drugId) return alert('กรุณาเลือกรายการสินค้า');
+        
+        const drugInfo = allDrugsList.find(x => x.Drug_ID === drugId);
+        const qtyPack = document.getElementById('ob_qty_pack').value;
+        const qtyInBase = Number(drugInfo.Pack_Size) * Number(qtyPack);
+        
+        if(qtyInBase <= 0) return alert('จำนวนต้องมากกว่า 0');
+
+        obItems.push({
+            drugId: drugId,
+            drugName: drugInfo.Drug_Name,
+            lotNo: document.getElementById('ob_lot').value || '-',
+            expDate: document.getElementById('ob_exp').value || '',
+            packQty: qtyPack,
+            qtyIn: qtyInBase,
+            unit: drugInfo.Unit,
+            note: document.getElementById('ob_note').value || 'บันทึกยอดยกมาตั้งต้น'
+        });
+
+        renderObTable();
+        
+        // Clear Form
+        document.getElementById('ob_qty_pack').value = '';
+        document.getElementById('ob_lot').value = '';
+        if(document.getElementById('ob_exp')._flatpickr) document.getElementById('ob_exp')._flatpickr.clear();
+        if(tomSelectOb) tomSelectOb.clear();
+        calcObQty();
+    }
+
+    function renderObTable() {
+        const tb = document.getElementById('obTableBody');
+        if(obItems.length === 0) {
+            tb.innerHTML = '<tr><td colspan="6" class="text-center p-8 text-slate-400 border-dashed border-2 m-4">ยังไม่มีรายการยอดยกมา</td></tr>';
+            document.getElementById('btnSubmitOb').disabled = true;
+            return;
+        }
+        document.getElementById('btnSubmitOb').disabled = false;
+        tb.innerHTML = '';
+
+        obItems.forEach((item, index) => {
+            tb.innerHTML += `<tr class="border-b hover:bg-amber-50">
+                <td class="p-2 text-slate-500 text-center font-bold">${index + 1}</td>
+                <td class="p-2 font-bold text-amber-800">${item.drugName}</td>
+                <td class="p-2 text-xs font-mono text-slate-500">L: ${item.lotNo} <br>E: ${item.expDate}</td>
+                <td class="p-2 text-xs text-slate-600 text-center">${item.note}</td>
+                <td class="p-2 text-right font-black text-lg text-slate-700">${item.qtyIn} <span class="text-xs font-normal text-slate-500">${item.unit}</span></td>
+                <td class="p-2 text-center">
+                    <button type="button" onclick="removeObItem(${index})" class="text-red-400 hover:text-red-600 font-bold text-lg" title="ลบ">✕</button>
+                </td>
+            </tr>`;
+        });
+    }
+
+    function removeObItem(index) {
+        obItems.splice(index, 1);
+        renderObTable();
+    }
+
+    function submitOpeningBalance() {
+        let dept = getCurrentDept();
+        if(dept === 'ALL') return alert('กรุณาเลือกคลัง (OPD/IPD) ที่แถบด้านบนก่อนบันทึกยอดยกมา');
+        if(obItems.length === 0) return;
+        if(!confirm(`คุณต้องการบันทึกยอดยกมาเข้าคลัง ${dept} จำนวน ${obItems.length} รายการ ใช่หรือไม่?`)) return;
+
+        const payload = {
+            header: {
+                date: document.getElementById('ob_date').value,
+                reqType: 'ยอดยกมา', // ให้ Backend รู้ว่าเป็นยอดยกมา
+                reqNo: document.getElementById('ob_ref_no').value || 'ยอดยกมาต้นปี',
+                userId: currentUser.id,
+                department: dept,
+                source: 'ยอดยกมาตั้งต้น'
+            },
+            items: obItems // ส่ง format เดียวกับรับยาเข้า
+        };
+
+        const btn = document.getElementById('btnSubmitOb');
+        btn.disabled = true;
+        btn.innerText = 'กำลังประมวลผล...';
+
+        callAPI('receiveDrugsBulk', payload).then(res => {
+            alert(res.message);
+            btn.disabled = false;
+            btn.innerText = '✅ ยืนยันบันทึกยอดยกมาเข้าคลัง';
+            if(res.success) {
+                obItems = [];
+                renderObTable();
+            }
+        });
+    }
+
+    // ==========================================
+    // รับยาเข้า (Bulk Receive)
+    // ==========================================
     function calculateRecvQty() {
       const id = document.getElementById('recv_drug').value; const qty = document.getElementById('recv_qty_pack').value;
       document.getElementById('recv_pack_size').value = ''; document.getElementById('recv_total_base').innerText = '0'; document.getElementById('recv_unit_label').value = '';
@@ -923,6 +1068,7 @@
       });
     }
 
+    // จ่ายยาออก (Dispense)
     function checkDispenseBalance() { 
         const drugId = document.getElementById('disp_drug').value; 
         document.getElementById('disp_current_balance').innerText = '...'; 
@@ -979,7 +1125,7 @@
     }
 
     // =========================================================
-    // สร้างใบขอเบิกยา (ปรับปรุงเป็น Pack)
+    // สร้างใบขอเบิกยา (Auto Req)
     // =========================================================
     function loadAutoRequisition() {
         let dept = getCurrentDept();
@@ -1028,7 +1174,6 @@
             let balClass = Number(r.Balance) <= minBase ? 'text-red-600 font-black' : 'text-slate-800 font-bold';
             let warnIcon = Number(r.Balance) <= minBase ? '🚨' : '';
             
-            // แสดงผลยอดคงเหลือเป็นเม็ด พร้อมบอกจำนวนแพ็คคร่าวๆ
             let balPacks = (Number(r.Balance) / Number(r.Pack_Size)).toFixed(1).replace('.0','');
             let balanceDisplay = `${r.Balance} <span class="text-xs text-slate-500 block font-normal">(${balPacks} แพ็ค)</span>`;
 
@@ -1037,18 +1182,14 @@
                     <td class="p-3 font-bold text-slate-800">${warnIcon} ${r.Drug_Name}</td>
                     <td class="p-3 text-center ${balClass} text-lg leading-tight">${balanceDisplay}</td>
                     <td class="p-3 text-center text-xs font-medium text-slate-500">${r.Min} / ${r.Max}</td>
-                    <td class="p-3 text-center text-blue-700 font-bold bg-blue-50">
-                        <span class="block text-xl">${r.SuggestPacks}</span>
-                    </td>
+                    <td class="p-3 text-center text-blue-700 font-bold bg-blue-50"><span class="block text-xl">${r.SuggestPacks}</span></td>
                     <td class="p-3 text-center bg-teal-50 no-print-input border-x border-teal-100">
                         <div class="flex items-center justify-center gap-1">
                             <input type="number" step="1" min="1" value="${r.ReqQty}" onchange="updateReqQty(${i}, this.value)" class="w-16 text-center border-b-2 border-teal-400 bg-transparent py-1 font-black text-teal-800 text-xl outline-none">
                             <span class="text-xs text-teal-700 font-bold">x ${r.Pack_Size}</span>
                         </div>
                     </td>
-                    <td class="p-3 text-center print-only-display hidden text-teal-800 font-black text-lg">
-                        ${r.ReqQty} x ${r.Pack_Size}
-                    </td>
+                    <td class="p-3 text-center print-only-display hidden text-teal-800 font-black text-lg">${r.ReqQty} x ${r.Pack_Size}</td>
                     <td class="p-3 text-center text-xs font-bold text-slate-600">${r.Unit}</td>
                     <td class="p-3 text-center no-print"><button onclick="removeReqItem(${i})" class="text-red-400 hover:text-red-600 text-lg font-bold" title="ลบทิ้ง">✕</button></td>
                 </tr>`;
@@ -1058,32 +1199,21 @@
     function updateReqQty(index, val) { 
         autoReqData[index].ReqQty = Number(val); 
         let row = document.getElementById(`req_row_${index}`); 
-        if(row) {
-            row.querySelector('.print-only-display').innerText = `${val} x ${autoReqData[index].Pack_Size}`;
-        }
+        if(row) { row.querySelector('.print-only-display').innerText = `${val} x ${autoReqData[index].Pack_Size}`; }
     }
     
-    function removeReqItem(index) { 
-        autoReqData.splice(index, 1); 
-        renderAutoRequisition(); 
-    }
+    function removeReqItem(index) { autoReqData.splice(index, 1); renderAutoRequisition(); }
 
     function printRequisition() {
         if(autoReqData.length === 0) return alert("ไม่มีรายการขอเบิก");
         const printArea = document.getElementById('printArea');
-        let d = new Date().toLocaleString('th-TH'); 
-        let dept = getCurrentDept() === 'ALL' ? 'รวมทุกคลัง' : getCurrentDept();
+        let d = new Date().toLocaleString('th-TH'); let dept = getCurrentDept() === 'ALL' ? 'รวมทุกคลัง' : getCurrentDept();
         
         let html = `<div class="print-doc"><h2>ใบขอเบิกยา (Requisition Form)</h2><p class="text-center mb-4">หน่วยงานที่ขอเบิก: <strong>${dept}</strong> | ข้อมูล ณ วันที่: ${d}</p><style>.no-print { display: none !important; } .no-print-input { display: none !important; } .print-only-display { display: table-cell !important; }</style>`;
         html += document.getElementById('reqTableExport').outerHTML;
-        html += `<div style="margin-top: 50px; display: flex; justify-content: space-between; font-size: 14px;">
-                <div style="text-align: center;">ลงชื่อ.......................................................ผู้ขอเบิก<br><br>(.......................................................)</div>
-                <div style="text-align: center;">ลงชื่อ.......................................................ผู้จ่ายยา<br><br>(.......................................................)</div>
-                <div style="text-align: center;">ลงชื่อ.......................................................ผู้รับยา<br><br>(.......................................................)</div>
-            </div></div>`;
+        html += `<div style="margin-top: 50px; display: flex; justify-content: space-between; font-size: 14px;"><div style="text-align: center;">ลงชื่อ.......................................................ผู้ขอเบิก<br><br>(.......................................................)</div><div style="text-align: center;">ลงชื่อ.......................................................ผู้จ่ายยา<br><br>(.......................................................)</div><div style="text-align: center;">ลงชื่อ.......................................................ผู้รับยา<br><br>(.......................................................)</div></div></div>`;
         
-        printArea.innerHTML = html; 
-        setTimeout(() => { window.print(); }, 300);
+        printArea.innerHTML = html; setTimeout(() => { window.print(); }, 300);
     }
 
     // รายงานยาคงคลัง
@@ -1093,8 +1223,7 @@
         tb.innerHTML = '<tr><td colspan="6" class="text-center p-10"><div class="loader"></div> กำลังคำนวณ...</td></tr>'; 
         callAPI('getInventoryReport', {department: getCurrentDept()}).then(data => { 
             if(data.error) return alert("Error: " + data.message); 
-            invReportData = data; 
-            renderInventoryReport(); 
+            invReportData = data; renderInventoryReport(); 
         }); 
     }
     
@@ -1108,15 +1237,10 @@
             let valA = a[col]; let valB = b[col]; 
             if (col === 'Balance') { valA = Number(valA); valB = Number(valB); } 
             else if (col === 'Earliest_Exp') { 
-                if (!valA) return invSortAsc ? 1 : -1; 
-                if (!valB) return invSortAsc ? -1 : 1; 
+                if (!valA) return invSortAsc ? 1 : -1; if (!valB) return invSortAsc ? -1 : 1; 
                 valA = new Date(valA).getTime(); valB = new Date(valB).getTime(); 
-            } else { 
-                valA = String(valA).toLowerCase(); valB = String(valB).toLowerCase(); 
-            } 
-            if (valA < valB) return invSortAsc ? -1 : 1; 
-            if (valA > valB) return invSortAsc ? 1 : -1; 
-            return 0; 
+            } else { valA = String(valA).toLowerCase(); valB = String(valB).toLowerCase(); } 
+            if (valA < valB) return invSortAsc ? -1 : 1; if (valA > valB) return invSortAsc ? 1 : -1; return 0; 
         }); 
         renderInventoryReport(); 
     }
@@ -1137,37 +1261,25 @@
     }
     
     function printInventoryReport() {
-       const printArea = document.getElementById('printArea'); 
-       let d = new Date().toLocaleString('th-TH');
+       const printArea = document.getElementById('printArea'); let d = new Date().toLocaleString('th-TH');
        let html = `<div class="print-doc"><h2>รายงานยาคงคลัง (Sub-Stock)</h2><p class="text-center mb-4">ข้อมูล ณ วันที่: ${d} | คลังที่เลือก: ${getCurrentDept() === 'ALL' ? 'รวมทุกคลัง' : getCurrentDept()}</p>`;
-       html += document.getElementById('invReportTable').outerHTML; 
-       html += `</div>`;
-       printArea.innerHTML = html; 
-       setTimeout(() => { window.print(); }, 300);
+       html += document.getElementById('invReportTable').outerHTML; html += `</div>`;
+       printArea.innerHTML = html; setTimeout(() => { window.print(); }, 300);
     }
 
     // Stock Card เสมือนจริง
     function generateVirtualStockCard() { 
-        const drugId = document.getElementById('vc_drug').value;
-        const startDate = document.getElementById('vc_start_date').value;
-        const endDate = document.getElementById('vc_end_date').value; 
+        const drugId = document.getElementById('vc_drug').value, startDate = document.getElementById('vc_start_date').value, endDate = document.getElementById('vc_end_date').value; 
         if(!drugId || !startDate || !endDate) return alert("กรุณาเลือกยาและระบุช่วงวันที่"); 
-        
         document.getElementById('vcTableBody').innerHTML = '<tr><td colspan="7" class="text-center p-10"><div class="loader"></div> กำลังคำนวณ...</td></tr>'; 
-        document.getElementById('btnExportVc').disabled = true; 
-        document.getElementById('btnPrintVc').disabled = true; 
-        
+        document.getElementById('btnExportVc').disabled = true; document.getElementById('btnPrintVc').disabled = true; 
         callAPI('getStockCardRaw', {drugId: drugId, department: getCurrentDept()}).then(data => { 
-            if(data.error) return alert("Error: " + data.message); 
-            vcRawData = data; 
-            renderVirtualStockCard(); 
+            if(data.error) return alert("Error: " + data.message); vcRawData = data; renderVirtualStockCard(); 
         }); 
     }
     
     function renderVirtualStockCard() {
-       const startDate = new Date(document.getElementById('vc_start_date').value);
-       const endDate = new Date(document.getElementById('vc_end_date').value); 
-       endDate.setHours(23,59,59,999);
+       const startDate = new Date(document.getElementById('vc_start_date').value), endDate = new Date(document.getElementById('vc_end_date').value); endDate.setHours(23,59,59,999);
        const reqTypeFilter = document.getElementById('vc_req_type').value;
        
        let info = vcRawData.drugInfo, trans = vcRawData.transactions;
@@ -1182,11 +1294,7 @@
        let bfBalance = 0, displayRows = [];
        trans.forEach(t => { 
            let tDate = new Date(t.DateStr); 
-           if (tDate < startDate) { 
-               bfBalance += t.Qty_In - t.Qty_Out; 
-           } else if (tDate >= startDate && tDate <= endDate) { 
-               displayRows.push(t); 
-           } 
+           if (tDate < startDate) { bfBalance += t.Qty_In - t.Qty_Out; } else if (tDate >= startDate && tDate <= endDate) { displayRows.push(t); } 
        });
        
        const tb = document.getElementById('vcTableBody'); tb.innerHTML = '';
@@ -1197,8 +1305,7 @@
        
        let currentBalance = bfBalance, count = 0;
        displayRows.forEach(t => {
-           currentBalance += t.Qty_In - t.Qty_Out; 
-           let showRow = true;
+           currentBalance += t.Qty_In - t.Qty_Out; let showRow = true;
            if (t.Type === 'IN') { 
                if (reqTypeFilter === 'REAL' && t.Req_Type.includes('ฉุกเฉิน')) showRow = false; 
                if (reqTypeFilter === 'EMERGENCY' && !t.Req_Type.includes('ฉุกเฉิน')) showRow = false; 
@@ -1214,19 +1321,13 @@
            }
        });
        if(count === 0) tb.innerHTML += '<tr><td colspan="7" class="text-center p-10 text-slate-400">ไม่มีการเคลื่อนไหวในช่วงเวลาที่เลือก (นอกจากยอดยกมา)</td></tr>';
-       
-       document.getElementById('btnExportVc').disabled = false; 
-       document.getElementById('btnPrintVc').disabled = false;
+       document.getElementById('btnExportVc').disabled = false; document.getElementById('btnPrintVc').disabled = false;
     }
     
     function printVirtualStockCard() { 
-        const printArea = document.getElementById('printArea'); 
-        let html = `<div class="print-doc"><h2>รายงาน Stock Card</h2><p class="text-center mb-4">คลัง: ${getCurrentDept() === 'ALL' ? 'รวมทุกคลัง' : getCurrentDept()}</p>`; 
-        html += document.getElementById('vc_header_info').outerHTML; 
-        html += document.getElementById('vcTableExport').outerHTML; 
-        html += `</div>`; 
-        printArea.innerHTML = html; 
-        setTimeout(() => { window.print(); }, 300); 
+        const printArea = document.getElementById('printArea'); let html = `<div class="print-doc"><h2>รายงาน Stock Card</h2><p class="text-center mb-4">คลัง: ${getCurrentDept() === 'ALL' ? 'รวมทุกคลัง' : getCurrentDept()}</p>`; 
+        html += document.getElementById('vc_header_info').outerHTML; html += document.getElementById('vcTableExport').outerHTML; html += `</div>`; 
+        printArea.innerHTML = html; setTimeout(() => { window.print(); }, 300); 
     }
 
     // ประวัติรับยาเข้า (IN)
@@ -1238,130 +1339,80 @@
         }); 
     }
     function applyFilterIn() { 
-        const dateStr = document.getElementById('filter_in_date').value;
-        const drugId = document.getElementById('filter_in_drug').value;
-        const searchTxt = document.getElementById('filter_in_search').value.toLowerCase(); 
+        const dateStr = document.getElementById('filter_in_date').value; const drugId = document.getElementById('filter_in_drug').value; const searchTxt = document.getElementById('filter_in_search').value.toLowerCase(); 
         filteredHistoryIn = rawHistoryIn.filter(r => { 
-            let matchDate = dateStr ? (r.DateStr === dateStr) : true; 
-            let matchDrug = drugId ? (r.Drug_ID === drugId) : true; 
-            let matchSearch = searchTxt ? (`${r.Lot_No} ${r.Actual_Req_No} ${r.Emergency_Req_No}`.toLowerCase().includes(searchTxt)) : true; 
+            let matchDate = dateStr ? (r.DateStr === dateStr) : true; let matchDrug = drugId ? (r.Drug_ID === drugId) : true; let matchSearch = searchTxt ? (`${r.Lot_No} ${r.Actual_Req_No} ${r.Emergency_Req_No}`.toLowerCase().includes(searchTxt)) : true; 
             return matchDate && matchDrug && matchSearch; 
-        }); 
-        renderHistoryIn(filteredHistoryIn); 
+        }); renderHistoryIn(filteredHistoryIn); 
     }
     window.openUpdateReqModal = function(id) { 
-        try { 
-            document.getElementById('updateReqForm').reset(); 
-            document.getElementById('update_trans_id').value = id; 
-            let dateEl = document.getElementById('update_req_date'); 
-            if(dateEl && dateEl._flatpickr) dateEl._flatpickr.setDate(new Date()); 
-            updateReqModalInstance.show(); 
-        } catch(err) { alert("Error: " + err.message); } 
+        try { document.getElementById('updateReqForm').reset(); document.getElementById('update_trans_id').value = id; let dateEl = document.getElementById('update_req_date'); if(dateEl && dateEl._flatpickr) dateEl._flatpickr.setDate(new Date()); updateReqModalInstance.show(); } catch(err) { alert("Error: " + err.message); } 
     };
     function renderHistoryIn(data) { 
         const tb = document.getElementById('historyInTableBody'); tb.innerHTML = ''; 
         if(data.length === 0) return tb.innerHTML = '<tr><td colspan="8" class="text-center p-10 text-slate-400">ไม่พบประวัติ</td></tr>'; 
         data.forEach((r, index) => { 
-            let isDuan = String(r.Req_Type).includes('เบิกฉุกเฉิน'); 
-            let reqBadge = isDuan ? `<span class="text-red-600 block bg-red-50 px-2 py-0.5 rounded border border-red-200 font-bold">ฉุกเฉิน: ${r.Emergency_Req_No}</span>` : `<span class="text-green-700 block font-bold">จริง: ${r.Actual_Req_No}</span>`; 
+            let isDuan = String(r.Req_Type).includes('เบิกฉุกเฉิน'); let reqBadge = isDuan ? `<span class="text-red-600 block bg-red-50 px-2 py-0.5 rounded border border-red-200 font-bold">ฉุกเฉิน: ${r.Emergency_Req_No}</span>` : `<span class="text-green-700 block font-bold">จริง: ${r.Actual_Req_No}</span>`; 
             if(String(r.Req_Type).includes('อัปเดต')) reqBadge = `<span class="line-through text-slate-400 block text-[10px]">ฉุกเฉิน: ${r.Emergency_Req_No}</span><span class="text-green-700 block font-bold">จริง: ${r.Actual_Req_No}</span>`; 
             let btn = isDuan ? `<button type="button" onclick="openUpdateReqModal('${r.Trans_ID}')" class="bg-yellow-100 text-yellow-700 px-3 py-1.5 rounded-lg text-xs border border-yellow-300 hover:bg-yellow-200 font-bold shadow-sm">อัปเดต</button>` : `<button type="button" onclick="printSingleSticker(${index}, 'IN')" class="bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg text-xs border hover:bg-slate-200 shadow-sm font-bold">🖨️ พิมพ์</button>`; 
             tb.innerHTML += `<tr class="border-b hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="chk-print-in w-4 h-4" value="${index}"></td><td class="p-3 text-slate-500 font-mono text-xs">${safeFormatDate(r.Date)}</td><td class="p-3 text-xs">${reqBadge}</td><td class="p-3 font-bold text-slate-800">${r.Drug_Name}</td><td class="p-3 text-xs font-mono text-slate-500">L: ${r.Lot_No}<br>E: ${safeFormatDate(r.Exp_Date)}</td><td class="p-3 text-right text-blue-700 font-black text-lg">${r.Qty_In} <span class="text-xs font-medium text-slate-400">${r.Unit}</span></td><td class="p-3 text-center text-xs font-medium text-slate-600">${r.Source_Dest}</td><td class="p-3 text-center">${btn}</td></tr>`; 
         }); 
     }
-    function clearFilterIn() { 
-        if(document.getElementById('filter_in_date')._flatpickr) document.getElementById('filter_in_date')._flatpickr.clear(); 
-        document.getElementById('filter_in_search').value = ''; 
-        if(tomSelectFilterIn) tomSelectFilterIn.clear(); 
-        applyFilterIn(); 
-    }
+    function clearFilterIn() { if(document.getElementById('filter_in_date')._flatpickr) document.getElementById('filter_in_date')._flatpickr.clear(); document.getElementById('filter_in_search').value = ''; if(tomSelectFilterIn) tomSelectFilterIn.clear(); applyFilterIn(); }
     function saveActualReq(e) { 
         e.preventDefault(); 
-        callAPI('updateToActualReq', {transId: document.getElementById('update_trans_id').value, actualReqNo: document.getElementById('update_req_no').value, actualReqDate: document.getElementById('update_req_date').value}).then(res => { 
-            alert(res.message); if(res.success) { updateReqModalInstance.hide(); loadHistoryIn(); } 
-        }); 
+        callAPI('updateToActualReq', {transId: document.getElementById('update_trans_id').value, actualReqNo: document.getElementById('update_req_no').value, actualReqDate: document.getElementById('update_req_date').value}).then(res => { alert(res.message); if(res.success) { updateReqModalInstance.hide(); loadHistoryIn(); } }); 
     }
 
     // ประวัติจ่ายยาออก (OUT)
     function loadHistoryOut() { 
         document.getElementById('historyOutTableBody').innerHTML = '<tr><td colspan="7" class="text-center p-10"><div class="loader"></div> กำลังโหลด...</td></tr>'; 
         callAPI('getTransactions', {department: getCurrentDept(), type: 'OUT'}).then(data => { 
-            if(data.error) return document.getElementById('historyOutTableBody').innerHTML = `<tr><td colspan="7" class="text-center text-red-500 p-10">Error: ${data.message}</td></tr>`; 
-            rawHistoryOut = data || []; applyFilterOut(); 
+            if(data.error) return document.getElementById('historyOutTableBody').innerHTML = `<tr><td colspan="7" class="text-center text-red-500 p-10">Error: ${data.message}</td></tr>`; rawHistoryOut = data || []; applyFilterOut(); 
         }); 
     }
     function applyFilterOut() { 
-        const dateStr = document.getElementById('filter_out_date').value;
-        const drugId = document.getElementById('filter_out_drug').value;
-        const searchTxt = document.getElementById('filter_out_search').value.toLowerCase(); 
+        const dateStr = document.getElementById('filter_out_date').value; const drugId = document.getElementById('filter_out_drug').value; const searchTxt = document.getElementById('filter_out_search').value.toLowerCase(); 
         filteredHistoryOut = rawHistoryOut.filter(r => { 
-            let matchDate = dateStr ? (r.DateStr === dateStr) : true; 
-            let matchDrug = drugId ? (r.Drug_ID === drugId) : true; 
-            let matchSearch = searchTxt ? (`${r.Lot_No} ${r.Source_Dest}`.toLowerCase().includes(searchTxt)) : true; 
+            let matchDate = dateStr ? (r.DateStr === dateStr) : true; let matchDrug = drugId ? (r.Drug_ID === drugId) : true; let matchSearch = searchTxt ? (`${r.Lot_No} ${r.Source_Dest}`.toLowerCase().includes(searchTxt)) : true; 
             return matchDate && matchDrug && matchSearch; 
-        }); 
-        renderHistoryOut(filteredHistoryOut); 
+        }); renderHistoryOut(filteredHistoryOut); 
     }
     function renderHistoryOut(data) { 
         const tb = document.getElementById('historyOutTableBody'); tb.innerHTML = ''; 
         if(data.length === 0) return tb.innerHTML = '<tr><td colspan="7" class="text-center p-10 text-slate-400">ไม่พบประวัติ</td></tr>'; 
         data.forEach((r, index) => { 
-            let lotDisplay = r.Lot_No ? `Lot: ${r.Lot_No}` : '-'; 
-            let reasonDisplay = String(r.Req_Type).includes('Take Stock') ? `<span class="text-[10px] bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider inline-block mt-1 border border-purple-200">Take Stock</span>` : ''; 
+            let lotDisplay = r.Lot_No ? `Lot: ${r.Lot_No}` : '-'; let reasonDisplay = String(r.Req_Type).includes('Take Stock') ? `<span class="text-[10px] bg-purple-100 text-purple-800 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider inline-block mt-1 border border-purple-200">Take Stock</span>` : ''; 
             tb.innerHTML += `<tr class="border-b hover:bg-slate-50"><td class="p-3 text-center"><input type="checkbox" class="chk-print-out w-4 h-4" value="${index}"></td><td class="p-3 text-slate-500 font-mono text-xs">${safeFormatDate(r.Date)}</td><td class="p-3 font-bold text-slate-800">${r.Drug_Name} ${reasonDisplay}<br><span class="text-xs text-slate-400 font-mono">${lotDisplay}</span></td><td class="p-3 text-right text-orange-600 font-black text-lg">${r.Qty_Out} <span class="text-xs font-medium text-slate-400">${r.Unit}</span></td><td class="p-3 text-right font-black text-slate-800 text-lg">${r.Balance}</td><td class="p-3 text-center text-xs font-medium text-slate-600">${r.Source_Dest}</td><td class="p-3 text-center"><button type="button" onclick="printSingleSticker(${index}, 'OUT')" class="bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg text-xs border hover:bg-slate-200 shadow-sm font-bold">🖨️ พิมพ์</button></td></tr>`; 
         }); 
     }
-    function clearFilterOut() { 
-        if(document.getElementById('filter_out_date')._flatpickr) document.getElementById('filter_out_date')._flatpickr.clear(); 
-        document.getElementById('filter_out_search').value = ''; 
-        if(tomSelectFilterOut) tomSelectFilterOut.clear(); 
-        applyFilterOut(); 
-    }
+    function clearFilterOut() { if(document.getElementById('filter_out_date')._flatpickr) document.getElementById('filter_out_date')._flatpickr.clear(); document.getElementById('filter_out_search').value = ''; if(tomSelectFilterOut) tomSelectFilterOut.clear(); applyFilterOut(); }
     
     // พิมพ์สติ๊กเกอร์
     function toggleSelectAll(source, className) { document.querySelectorAll('.' + className).forEach(cb => cb.checked = source.checked); }
     function printSingleSticker(index, type) { if(type === 'IN') generateStickerHTML([filteredHistoryIn[index]], 'IN'); else generateStickerHTML([filteredHistoryOut[index]], 'OUT'); }
     function printSelectedStickers(type) { 
-        const className = type === 'IN' ? '.chk-print-in:checked' : '.chk-print-out:checked'; 
-        const selectedIndexes = Array.from(document.querySelectorAll(className)).map(cb => cb.value); 
+        const className = type === 'IN' ? '.chk-print-in:checked' : '.chk-print-out:checked'; const selectedIndexes = Array.from(document.querySelectorAll(className)).map(cb => cb.value); 
         if(selectedIndexes.length === 0) return alert('กรุณาเลือกรายการที่ต้องการพิมพ์ก่อน'); 
-        let itemsToPrint = selectedIndexes.map(i => type === 'IN' ? filteredHistoryIn[i] : filteredHistoryOut[i]); 
-        generateStickerHTML(itemsToPrint, type); 
+        let itemsToPrint = selectedIndexes.map(i => type === 'IN' ? filteredHistoryIn[i] : filteredHistoryOut[i]); generateStickerHTML(itemsToPrint, type); 
     }
     function generateStickerHTML(items, type) { 
         const printArea = document.getElementById('printArea'); let html = ''; 
         items.forEach(item => { 
-            let qtyInDisplay = type === 'IN' ? item.Qty_In : '-'; 
-            let qtyOutDisplay = type === 'OUT' ? item.Qty_Out : '-'; 
+            let qtyInDisplay = type === 'IN' ? item.Qty_In : '-'; let qtyOutDisplay = type === 'OUT' ? item.Qty_Out : '-'; 
             html += `<div class="sticker-row"><table class="sticker-table"><tr><td width="15%"><strong>วันที่</strong><br>${safeFormatDate(item.Date)}</td><td width="30%"><strong>รายการยา</strong><br>${item.Drug_Name}</td><td width="15%"><strong>Lot/Exp</strong><br>${item.Lot_No || '-'} / ${safeFormatDate(item.Exp_Date)}</td><td width="10%"><strong>รับ</strong><br>${qtyInDisplay}</td><td width="10%"><strong>จ่าย</strong><br>${qtyOutDisplay}</td><td width="10%"><strong>คงเหลือ</strong><br>${item.Balance}</td><td width="10%"><strong>ผู้${type === 'IN' ? 'รับ' : 'เบิก'}</strong><br>.........</td></tr></table></div>`; 
         }); 
-        printArea.innerHTML = html; 
-        setTimeout(() => { window.print(); document.querySelectorAll('.chk-print-in, .chk-print-out').forEach(cb => cb.checked = false); }, 300); 
+        printArea.innerHTML = html; setTimeout(() => { window.print(); document.querySelectorAll('.chk-print-in, .chk-print-out').forEach(cb => cb.checked = false); }, 300); 
     }
 
     // Dashboard
     function loadDashboardData() { 
-        document.getElementById('dash_total_val').innerText='...'; 
-        document.getElementById('dash_min_count').innerText='...'; 
-        document.getElementById('dash_exp_count').innerText='...'; 
-        document.getElementById('dash_em_count').innerText='...'; 
-        
+        document.getElementById('dash_total_val').innerText='...'; document.getElementById('dash_min_count').innerText='...'; document.getElementById('dash_exp_count').innerText='...'; document.getElementById('dash_em_count').innerText='...'; 
         callAPI('getDashboardData', {department: getCurrentDept()}).then(d=>{ 
             if(d.error) return alert('Dashboard Error: ' + d.message); 
-            document.getElementById('dash_total_val').innerText=d.totalValue.toLocaleString('th-TH',{minimumFractionDigits:2}); 
-            document.getElementById('dash_min_count').innerText=d.belowMinList.length; 
-            document.getElementById('dash_exp_count').innerText=d.expList.length; 
-            document.getElementById('dash_em_count').innerText=d.pendingEmCount; 
-            
-            let m=''; 
-            if(d.belowMinList.length===0) m='<li class="text-green-600 font-bold p-3 bg-green-50 rounded border border-green-100">✅ ยอดเยี่ยม! สต๊อกเพียงพอทุกรายการ</li>'; 
-            else d.belowMinList.forEach(x=>m+=`<li class="border-b py-3 text-red-800"><strong>${x.name}</strong> <br><span class="text-red-600 font-bold">คงเหลือ: ${x.bal} ${x.unit}</span> <span class="text-slate-400 text-xs">(จุดสั่งซื้อ: ${x.min} แพ็ค)</span></li>`); 
-            document.getElementById('dash_min_list').innerHTML=m; 
-            
-            let e=''; 
-            if(d.expList.length===0) e='<li class="text-green-600 font-bold p-3 bg-green-50 rounded border border-green-100">✅ ปลอดภัย! ไม่มียาใกล้หมดอายุใน 90 วัน</li>'; 
-            else d.expList.forEach(x=>e+=`<li class="border-b py-3"><strong>${x.name}</strong> <br><span class="text-slate-500 text-xs font-mono">Lot: ${x.lot}</span> | <span class="text-yellow-700 font-black">หมดอายุ: ${x.exp}</span></li>`); 
-            document.getElementById('dash_exp_list').innerHTML=e; 
+            document.getElementById('dash_total_val').innerText=d.totalValue.toLocaleString('th-TH',{minimumFractionDigits:2}); document.getElementById('dash_min_count').innerText=d.belowMinList.length; document.getElementById('dash_exp_count').innerText=d.expList.length; document.getElementById('dash_em_count').innerText=d.pendingEmCount; 
+            let m=''; if(d.belowMinList.length===0) m='<li class="text-green-600 font-bold p-3 bg-green-50 rounded border border-green-100">✅ ยอดเยี่ยม! สต๊อกเพียงพอทุกรายการ</li>'; else d.belowMinList.forEach(x=>m+=`<li class="border-b py-3 text-red-800"><strong>${x.name}</strong> <br><span class="text-red-600 font-bold">คงเหลือ: ${x.bal} ${x.unit}</span> <span class="text-slate-400 text-xs">(จุดสั่งซื้อ: ${x.min} แพ็ค)</span></li>`); document.getElementById('dash_min_list').innerHTML=m; 
+            let e=''; if(d.expList.length===0) e='<li class="text-green-600 font-bold p-3 bg-green-50 rounded border border-green-100">✅ ปลอดภัย! ไม่มียาใกล้หมดอายุใน 90 วัน</li>'; else d.expList.forEach(x=>e+=`<li class="border-b py-3"><strong>${x.name}</strong> <br><span class="text-slate-500 text-xs font-mono">Lot: ${x.lot}</span> | <span class="text-yellow-700 font-black">หมดอายุ: ${x.exp}</span></li>`); document.getElementById('dash_exp_list').innerHTML=e; 
         }); 
     }
     
@@ -1369,133 +1420,28 @@
     function loadTakeStockData() { 
         const tb=document.getElementById('tsTableBody'); tb.innerHTML='<tr><td colspan="6" class="text-center p-10"><div class="loader"></div> กำลังโหลดข้อมูล...</td></tr>'; 
         callAPI('getInventoryStatus', {department: getCurrentDept()}).then(d=>{ 
-            if(d.error) return tb.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 p-6">Error: ${d.message}</td></tr>`; 
-            tsInventoryList=d; tb.innerHTML=''; 
-            d.forEach(x=>{ 
-                tb.innerHTML+=`<tr class="border-b hover:bg-slate-50" id="ts_row_${x.Drug_ID}"><td class="p-3 font-bold text-slate-800">${x.Drug_Name} <span class="text-xs text-slate-400 block font-normal">บาร์โค้ด: ${x.Barcode || '-'}</span></td><td class="p-3 text-center text-xl font-black text-blue-600">${x.Expected}</td><td class="p-3 bg-yellow-50 text-center border-x border-yellow-100"><input type="number" step="any" id="ts_pack_${x.Drug_ID}" class="w-full text-center border-b-2 border-yellow-400 bg-transparent py-1 font-black text-lg outline-none focus:border-yellow-600 text-slate-800" oninput="calculateTsDiff('${x.Drug_ID}', ${x.Pack_Size}, ${x.Expected})"></td><td class="p-3 text-center font-black text-lg text-slate-700" id="ts_actual_${x.Drug_ID}">-</td><td class="p-3 text-center font-black text-xl" id="ts_diff_${x.Drug_ID}">-</td><td class="p-3 text-center" id="ts_action_${x.Drug_ID}">-</td></tr>`; 
-            }); 
+            if(d.error) return tb.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 p-6">Error: ${d.message}</td></tr>`; tsInventoryList=d; tb.innerHTML=''; 
+            d.forEach(x=>{ tb.innerHTML+=`<tr class="border-b hover:bg-slate-50" id="ts_row_${x.Drug_ID}"><td class="p-3 font-bold text-slate-800">${x.Drug_Name} <span class="text-xs text-slate-400 block font-normal">บาร์โค้ด: ${x.Barcode || '-'}</span></td><td class="p-3 text-center text-xl font-black text-blue-600">${x.Expected}</td><td class="p-3 bg-yellow-50 text-center border-x border-yellow-100"><input type="number" step="any" id="ts_pack_${x.Drug_ID}" class="w-full text-center border-b-2 border-yellow-400 bg-transparent py-1 font-black text-lg outline-none focus:border-yellow-600 text-slate-800" oninput="calculateTsDiff('${x.Drug_ID}', ${x.Pack_Size}, ${x.Expected})"></td><td class="p-3 text-center font-black text-lg text-slate-700" id="ts_actual_${x.Drug_ID}">-</td><td class="p-3 text-center font-black text-xl" id="ts_diff_${x.Drug_ID}">-</td><td class="p-3 text-center" id="ts_action_${x.Drug_ID}">-</td></tr>`; }); 
         }); 
     }
     
-    function handleTsDropdownSelect() { 
-        const dId = document.getElementById('ts_drug').value; 
-        if(!dId) return; 
-        const row = document.getElementById(`ts_row_${dId}`); 
-        if(row) { 
-            row.classList.add('bg-purple-100'); 
-            setTimeout(() => row.classList.remove('bg-purple-100'), 1500); 
-            row.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
-            document.getElementById(`ts_pack_${dId}`).focus(); 
-        } 
-        if(tomSelectTs) tomSelectTs.clear(); 
-    }
-    
-    function handleTsScan(e) { 
-        if(e.key==='Enter') { 
-            e.preventDefault(); const c=e.target.value.trim(); 
-            if(!c) return; 
-            const d=tsInventoryList.find(x=>String(x.Barcode)===c); 
-            if(d) { 
-                const r=document.getElementById(`ts_row_${d.Drug_ID}`); 
-                r.classList.add('bg-purple-100'); 
-                setTimeout(()=>r.classList.remove('bg-purple-100'),1500); 
-                r.scrollIntoView({ behavior: 'smooth', block: 'center' }); 
-                document.getElementById(`ts_pack_${d.Drug_ID}`).focus(); 
-            } else alert('ไม่พบบาร์โค้ด!'); 
-            e.target.value=''; 
-        } 
-    }
+    function handleTsDropdownSelect() { const dId = document.getElementById('ts_drug').value; if(!dId) return; const row = document.getElementById(`ts_row_${dId}`); if(row) { row.classList.add('bg-purple-100'); setTimeout(() => row.classList.remove('bg-purple-100'), 1500); row.scrollIntoView({ behavior: 'smooth', block: 'center' }); document.getElementById(`ts_pack_${dId}`).focus(); } if(tomSelectTs) tomSelectTs.clear(); }
+    function handleTsScan(e) { if(e.key==='Enter') { e.preventDefault(); const c=e.target.value.trim(); if(!c) return; const d=tsInventoryList.find(x=>String(x.Barcode)===c); if(d) { const r=document.getElementById(`ts_row_${d.Drug_ID}`); r.classList.add('bg-purple-100'); setTimeout(()=>r.classList.remove('bg-purple-100'),1500); r.scrollIntoView({ behavior: 'smooth', block: 'center' }); document.getElementById(`ts_pack_${d.Drug_ID}`).focus(); } else alert('ไม่พบบาร์โค้ด!'); e.target.value=''; } }
     
     function calculateTsDiff(dId, pack, exp) { 
         const i=document.getElementById(`ts_pack_${dId}`).value, a=document.getElementById(`ts_actual_${dId}`), df=document.getElementById(`ts_diff_${dId}`), ac=document.getElementById(`ts_action_${dId}`); 
         if(i===''){ a.innerText='-'; df.innerText='-'; ac.innerHTML='-'; return; } 
         const ab=Number(i)*pack; const d=ab-exp; a.innerText=ab; df.innerText=d; 
-        if(d<0){ 
-            df.className="p-3 text-center font-black text-xl text-red-600"; 
-            ac.innerHTML=`<button type="button" onclick="openTsAdjustModal('${dId}', ${Math.abs(d)})" class="bg-red-100 text-red-700 px-3 py-1.5 rounded-lg text-xs font-bold border border-red-200 hover:bg-red-200 shadow-sm">ตัดยอดลง (-${Math.abs(d)})</button>`; 
-        } else if(d>0){ 
-            df.className="p-3 text-center font-black text-xl text-green-600"; 
-            ac.innerHTML=`<button type="button" onclick="openTsAdjustInModal('${dId}', ${d})" class="bg-green-100 text-green-700 px-3 py-1.5 rounded-lg text-xs font-bold border border-green-200 hover:bg-green-200 shadow-sm">เพิ่มยอดขึ้น (+${d})</button>`; 
-        } else { 
-            df.className="p-3 text-center font-black text-xl text-slate-400"; 
-            ac.innerHTML=`<span class="text-green-600 text-sm font-black">✓ ตรงเป๊ะ</span>`; 
-        } 
+        if(d<0){ df.className="p-3 text-center font-black text-xl text-red-600"; ac.innerHTML=`<button type="button" onclick="openTsAdjustModal('${dId}', ${Math.abs(d)})" class="bg-red-100 text-red-700 px-3 py-1.5 rounded-lg text-xs font-bold border border-red-200 hover:bg-red-200 shadow-sm">ตัดยอดลง (-${Math.abs(d)})</button>`; } 
+        else if(d>0){ df.className="p-3 text-center font-black text-xl text-green-600"; ac.innerHTML=`<button type="button" onclick="openTsAdjustInModal('${dId}', ${d})" class="bg-green-100 text-green-700 px-3 py-1.5 rounded-lg text-xs font-bold border border-green-200 hover:bg-green-200 shadow-sm">เพิ่มยอดขึ้น (+${d})</button>`; } 
+        else { df.className="p-3 text-center font-black text-xl text-slate-400"; ac.innerHTML=`<span class="text-green-600 text-sm font-black">✓ ตรงเป๊ะ</span>`; } 
     }
     
-    window.openTsAdjustModal=function(dId, d){ 
-        try{ 
-            const dr=tsInventoryList.find(x=>x.Drug_ID===dId); 
-            document.getElementById('ts_adj_drug_id').value=dId; 
-            document.getElementById('ts_adj_qty').value=d; 
-            document.getElementById('ts_adj_drug_name').innerText=dr.Drug_Name; 
-            document.getElementById('ts_adj_qty_display').innerText=d+' '+dr.Unit; 
-            let el=document.getElementById('ts_adj_date'); 
-            if(el&&el._flatpickr) el._flatpickr.setDate(new Date()); 
-            tsAdjustModalInstance.show(); 
-        } catch(e) { alert(e.message); } 
-    };
-
-    window.openTsAdjustInModal=function(dId, d){ 
-        try{ 
-            const dr=tsInventoryList.find(x=>x.Drug_ID===dId); 
-            document.getElementById('ts_adj_in_drug_id').value=dId; 
-            document.getElementById('ts_adj_in_qty').value=d; 
-            document.getElementById('ts_adj_in_drug_name').innerText=dr.Drug_Name; 
-            document.getElementById('ts_adj_in_qty_display').innerText='+' + d + ' ' + dr.Unit; 
-            let el=document.getElementById('ts_adj_in_date'); 
-            if(el&&el._flatpickr) el._flatpickr.setDate(new Date()); 
-            tsAdjustInModalInstance.show(); 
-        } catch(e) { alert(e.message); } 
-    };
+    window.openTsAdjustModal=function(dId, d){ try{ const dr=tsInventoryList.find(x=>x.Drug_ID===dId); document.getElementById('ts_adj_drug_id').value=dId; document.getElementById('ts_adj_qty').value=d; document.getElementById('ts_adj_drug_name').innerText=dr.Drug_Name; document.getElementById('ts_adj_qty_display').innerText=d+' '+dr.Unit; let el=document.getElementById('ts_adj_date'); if(el&&el._flatpickr) el._flatpickr.setDate(new Date()); tsAdjustModalInstance.show(); } catch(e) { alert(e.message); } };
+    window.openTsAdjustInModal=function(dId, d){ try{ const dr=tsInventoryList.find(x=>x.Drug_ID===dId); document.getElementById('ts_adj_in_drug_id').value=dId; document.getElementById('ts_adj_in_qty').value=d; document.getElementById('ts_adj_in_drug_name').innerText=dr.Drug_Name; document.getElementById('ts_adj_in_qty_display').innerText='+' + d + ' ' + dr.Unit; let el=document.getElementById('ts_adj_in_date'); if(el&&el._flatpickr) el._flatpickr.setDate(new Date()); tsAdjustInModalInstance.show(); } catch(e) { alert(e.message); } };
     
-    function submitTsAdjust(e) { 
-        e.preventDefault(); 
-        const btn=document.getElementById('btnTsAdjust'); 
-        btn.disabled=true; btn.innerText='ประมวลผล...'; 
-        const d={ 
-            date:document.getElementById('ts_adj_date').value, 
-            drugId:document.getElementById('ts_adj_drug_id').value, 
-            qtyOut:document.getElementById('ts_adj_qty').value, 
-            userId:currentUser.id, 
-            department:getCurrentDept(), 
-            reason:'ปรับปรุงสต๊อก (Take Stock)', 
-            destination: 'ปรับปรุงสต๊อก (ลดยอด)' 
-        }; 
-        callAPI('dispenseDrug', d).then(res=>{ 
-            alert(res.message); 
-            tsAdjustModalInstance.hide(); 
-            btn.disabled=false; btn.innerText='ยืนยันปรับปรุงยอด (ตัดสต๊อก)'; 
-            if(res.success){ loadTakeStockData(); loadDashboardData(); } 
-        }); 
-    }
-
-    function submitTsAdjustIn(e) { 
-        e.preventDefault(); 
-        const btn=document.getElementById('btnTsAdjustIn'); 
-        btn.disabled=true; btn.innerText='ประมวลผล...'; 
-        const payload={ 
-            header: {
-                date:document.getElementById('ts_adj_in_date').value, 
-                reqType: 'ปรับปรุงสต๊อก (Take Stock)',
-                reqNo: 'ADJ-IN',
-                userId:currentUser.id, 
-                department:getCurrentDept(), 
-                source: 'พบเกินในระบบ (Take Stock)' 
-            },
-            items: [{
-                drugId:document.getElementById('ts_adj_in_drug_id').value, 
-                qtyIn:document.getElementById('ts_adj_in_qty').value, 
-                lotNo: document.getElementById('ts_adj_in_lot').value || '-',
-                expDate: document.getElementById('ts_adj_in_exp').value || ''
-            }]
-        }; 
-        callAPI('receiveDrugsBulk', payload).then(res=>{ 
-            alert(res.message); 
-            tsAdjustInModalInstance.hide(); 
-            btn.disabled=false; btn.innerText='ยืนยันปรับปรุงยอด (รับเข้า)'; 
-            if(res.success){ loadTakeStockData(); loadDashboardData(); } 
-        }); 
-    }
+    function submitTsAdjust(e) { e.preventDefault(); const btn=document.getElementById('btnTsAdjust'); btn.disabled=true; btn.innerText='ประมวลผล...'; const d={ date:document.getElementById('ts_adj_date').value, drugId:document.getElementById('ts_adj_drug_id').value, qtyOut:document.getElementById('ts_adj_qty').value, userId:currentUser.id, department:getCurrentDept(), reason:'ปรับปรุงสต๊อก (Take Stock)', destination: 'ปรับปรุงสต๊อก (ลดยอด)' }; callAPI('dispenseDrug', d).then(res=>{ alert(res.message); tsAdjustModalInstance.hide(); btn.disabled=false; btn.innerText='ยืนยันปรับปรุงยอด (ตัดสต๊อก)'; if(res.success){ loadTakeStockData(); loadDashboardData(); } }); }
+    function submitTsAdjustIn(e) { e.preventDefault(); const btn=document.getElementById('btnTsAdjustIn'); btn.disabled=true; btn.innerText='ประมวลผล...'; const payload={ header: { date:document.getElementById('ts_adj_in_date').value, reqType: 'ปรับปรุงสต๊อก (Take Stock)', reqNo: 'ADJ-IN', userId:currentUser.id, department:getCurrentDept(), source: 'พบเกินในระบบ (Take Stock)' }, items: [{ drugId:document.getElementById('ts_adj_in_drug_id').value, qtyIn:document.getElementById('ts_adj_in_qty').value, lotNo: document.getElementById('ts_adj_in_lot').value || '-', expDate: document.getElementById('ts_adj_in_exp').value || '' }] }; callAPI('receiveDrugsBulk', payload).then(res=>{ alert(res.message); tsAdjustInModalInstance.hide(); btn.disabled=false; btn.innerText='ยืนยันปรับปรุงยอด (รับเข้า)'; if(res.success){ loadTakeStockData(); loadDashboardData(); } }); }
   </script>
 </body>
 </html>
