@@ -44,7 +44,7 @@
 <body class="h-screen flex overflow-hidden">
 
   <script>
-    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycby2uudRc7Ov8Gron-WHAzGb9iuNsgZjOS-VpJfv3YM5W8QFqCSg4ytyrKms1xPzLPRp/exec';
+    const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzVngoqiW2EP1wlW8PETGa0yHEOuAIiiaxvK9EcY3kL3glZTLvmVtPPAl0UoxW6N9b_YA/exec';
   </script>
 
   <div id="loginPage" class="fixed inset-0 bg-slate-100 flex items-center justify-center z-[100]">
@@ -223,7 +223,7 @@
                       </div>
 
                       <div class="md:col-span-2">
-                         <label class="block text-xs font-bold text-slate-600 mb-1">ราคา/หน่วย (บาท)</label>
+                         <label class="block text-xs font-bold text-slate-600 mb-1">ราคา/แพ็ค (บาท)</label>
                          <input type="number" step="0.01" id="ob_unit_price" class="w-full px-3 py-2 border rounded bg-slate-100 text-slate-500 text-right font-medium" readonly>
                       </div>
 
@@ -274,6 +274,120 @@
               
               <button onclick="submitOpeningBalance()" id="btnSubmitOb" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 text-lg rounded-xl shadow-lg transition disabled:bg-slate-300 disabled:cursor-not-allowed">✅ ยืนยันบันทึกยอดยกมาเข้าคลัง</button>
             </div>
+        </div>
+
+        <div id="view-auto-req" class="view-section hidden">
+          <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col h-[calc(100vh-8rem)]">
+             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3 border-b pb-3">
+                <div>
+                   <h3 class="text-lg font-bold text-teal-800">📝 สร้างรายการขอเบิกยาจากคลังใหญ่</h3>
+                   <p class="text-xs text-slate-500 mt-1">กดปุ่มรีเฟรชได้เรื่อยๆ ระบบจะคำนวณจำนวนแพ็คที่ต้องเบิกให้อัตโนมัติ (ไม่เกิน Max)</p>
+                </div>
+                <div class="flex gap-2 w-full md:w-auto">
+                   <button onclick="exportToExcel('reqTableExport', 'ใบขอเบิกยา')" class="flex-1 md:flex-none bg-green-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-700 shadow-sm font-medium">📊 Export</button>
+                   <button onclick="printRequisition()" class="flex-1 md:flex-none bg-slate-800 text-white px-3 py-2 rounded-lg text-sm hover:bg-slate-900 shadow-sm font-medium">🖨️ พิมพ์ใบเบิก</button>
+                </div>
+             </div>
+             
+             <div class="mb-4 p-4 bg-teal-50 border border-teal-100 rounded-lg flex flex-col md:flex-row gap-4 items-center justify-between">
+                <div class="text-sm text-teal-800 font-medium">
+                   🎯 สแกนคลัง <b><span id="auto_req_dept_display"></span></b> และคำนวณแพ็คเบิกอัตโนมัติ
+                </div>
+                <button onclick="loadAutoRequisition()" class="w-full md:w-auto bg-teal-600 text-white px-5 py-2.5 rounded-lg text-sm hover:bg-teal-700 shadow-md font-bold transition">
+                   🔄 ประมวลผลสร้างใบเบิกใหม่
+                </button>
+             </div>
+
+             <div class="overflow-x-auto flex-1 border border-slate-200 rounded-lg">
+                <table class="w-full text-left text-sm border-collapse whitespace-nowrap" id="reqTableExport">
+                   <thead class="bg-slate-100 sticky top-0 shadow-sm z-10">
+                      <tr>
+                         <th class="p-3 border-b text-slate-600 font-semibold w-16">รหัสยา</th>
+                         <th class="p-3 border-b text-slate-600 font-semibold">ชื่อยา</th>
+                         <th class="p-3 border-b text-center text-slate-600 font-semibold">คงเหลือ</th>
+                         <th class="p-3 border-b text-center text-slate-600 font-semibold">Min/Max<br><span class="text-[10px] font-normal">(แพ็ค)</span></th>
+                         <th class="p-3 border-b text-center text-blue-700 font-bold bg-blue-50">แนะนำเบิก<br><span class="text-[10px] font-normal text-slate-500">(แพ็ค)</span></th>
+                         <th class="p-3 border-b text-center text-teal-800 font-bold bg-teal-50 w-32">เบิกจริง (แก้ไขได้)<br><span class="text-[10px] font-normal text-teal-600">(แพ็ค x บรรจุ)</span></th>
+                         <th class="p-3 border-b text-center text-slate-600 font-semibold">หน่วย</th>
+                         <th class="p-3 border-b text-center no-print">ลบ</th>
+                      </tr>
+                   </thead>
+                   <tbody id="reqTableBody">
+                      <tr><td colspan="8" class="text-center p-10 text-slate-400 border-dashed border-2 m-4">กดปุ่ม "ประมวลผลสร้างใบเบิกใหม่" ด้านบนเพื่อเริ่มต้น</td></tr>
+                   </tbody>
+                </table>
+             </div>
+          </div>
+        </div>
+
+        <div id="view-inventory-report" class="view-section hidden">
+          <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border flex flex-col h-[calc(100vh-8rem)]">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
+               <h3 class="text-lg font-bold text-slate-800">📦 รายงานยาคงคลังปัจจุบัน</h3>
+               <div class="flex gap-2 w-full md:w-auto">
+                 <button onclick="exportToExcel('invReportTable', 'รายงานยาคงคลัง')" class="flex-1 md:flex-none bg-green-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-700 shadow-sm">📊 Export</button>
+                 <button onclick="printInventoryReport()" class="flex-1 md:flex-none bg-slate-800 text-white px-3 py-2 rounded-lg text-sm hover:bg-slate-900 shadow-sm">🖨️ พิมพ์</button>
+               </div>
+            </div>
+            <div class="mb-4">
+              <input type="text" id="inv_search" class="w-full border px-4 py-2.5 rounded-lg text-sm focus:ring-2 focus:ring-green-500 outline-none" placeholder="🔍 ค้นหาชื่อยา หรือ รหัสยา..." onkeyup="applyInvFilter()">
+            </div>
+            <div class="overflow-x-auto flex-1 border rounded-lg">
+              <table class="w-full text-left text-sm border-collapse whitespace-nowrap" id="invReportTable">
+                <thead class="bg-slate-100 sticky top-0 shadow-sm z-10 select-none">
+                  <tr>
+                    <th class="p-3 border-b cursor-pointer hover:bg-slate-200" onclick="sortInvReport('Drug_ID')">รหัสยา <span id="sort_Drug_ID" class="text-xs text-slate-400"></span></th>
+                    <th class="p-3 border-b cursor-pointer hover:bg-slate-200" onclick="sortInvReport('Drug_Name')">ชื่อยา <span id="sort_Drug_Name" class="text-xs text-slate-400"></span></th>
+                    <th class="p-3 border-b text-right cursor-pointer hover:bg-slate-200" onclick="sortInvReport('Balance')">คงเหลือสุทธิ <span id="sort_Balance" class="text-xs text-slate-400"></span></th>
+                    <th class="p-3 border-b text-center">หน่วย (บรรจุ)</th>
+                    <th class="p-3 border-b text-center">Min / Max <span class="text-[10px] block font-normal">(แพ็ค)</span></th>
+                    <th class="p-3 border-b text-center cursor-pointer hover:bg-slate-200" onclick="sortInvReport('Earliest_Exp')">หมดอายุเร็วสุด <span id="sort_Earliest_Exp" class="text-xs text-slate-400"></span></th>
+                  </tr>
+                </thead>
+                <tbody id="invTableBody"><tr><td colspan="6" class="text-center p-6 text-slate-500">กำลังโหลด...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="view-virtual-stockcard" class="view-section hidden">
+          <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border flex flex-col h-[calc(100vh-8rem)]">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-3">
+               <h3 class="text-lg font-bold text-slate-800">💳 Stock Card เสมือนจริง</h3>
+               <div class="flex gap-2 w-full md:w-auto">
+                 <button onclick="exportToExcel('vcTableExport', 'Stock_Card')" class="flex-1 md:flex-none bg-green-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-green-700 shadow-sm disabled:bg-slate-300" id="btnExportVc">📊 Export</button>
+                 <button onclick="printVirtualStockCard()" class="flex-1 md:flex-none bg-slate-800 text-white px-3 py-2 rounded-lg text-sm hover:bg-slate-900 shadow-sm disabled:bg-slate-300" id="btnPrintVc">🖨️ พิมพ์</button>
+               </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4 p-4 bg-slate-50 border rounded-lg">
+              <div class="md:col-span-2"><label class="block text-xs font-bold text-slate-700 mb-1">เลือกรายการยา</label><select id="vc_drug"><option value="">-- กำลังโหลด --</option></select></div>
+              <div><label class="block text-xs text-slate-600 mb-1">ตั้งแต่วันที่</label><input type="text" id="vc_start_date" class="w-full px-3 py-2 border rounded bg-white"></div>
+              <div><label class="block text-xs text-slate-600 mb-1">ถึงวันที่</label><input type="text" id="vc_end_date" class="w-full px-3 py-2 border rounded bg-white"></div>
+              <div class="md:col-span-2"><label class="block text-xs text-slate-600 mb-1">รูปแบบเอกสาร</label><select id="vc_req_type" class="w-full px-3 py-2 border rounded"><option value="ALL">ทั้งหมด (เบิกจริง + ฉุกเฉิน)</option><option value="REAL">เฉพาะใบเบิกจริง</option><option value="EMERGENCY">เฉพาะเบิกฉุกเฉิน</option></select></div>
+              <div class="md:col-span-2 flex items-end"><button onclick="generateVirtualStockCard()" class="w-full bg-blue-600 text-white font-bold py-2 rounded shadow-sm hover:bg-blue-700">🔍 ค้นหาประวัติ</button></div>
+            </div>
+            
+            <div id="vc_header_info" class="hidden mb-3 p-4 border border-slate-200 rounded-lg bg-white shadow-sm">
+               <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 text-sm">
+                  <div class="col-span-2"><strong>ชื่อยา:</strong> <span id="vc_info_name" class="text-blue-800 font-bold"></span></div>
+                  <div><strong>บาร์โค้ด:</strong> <span id="vc_info_barcode"></span></div>
+                  <div><strong>บรรจุ:</strong> <span id="vc_info_pack"></span> <span id="vc_info_unit"></span></div>
+                  <div class="text-red-600"><strong>Min (แพ็ค):</strong> <span id="vc_info_min"></span></div>
+                  <div class="text-green-700"><strong>Max (แพ็ค):</strong> <span id="vc_info_max"></span></div>
+               </div>
+            </div>
+
+            <div class="overflow-x-auto flex-1 border rounded-lg bg-white">
+              <table class="w-full text-left text-sm border-collapse whitespace-nowrap" id="vcTableExport">
+                <thead class="bg-slate-100 sticky top-0 shadow-sm z-10">
+                  <tr><th class="p-3 border-b">วันที่</th><th class="p-3 border-b">เอกสารอ้างอิง</th><th class="p-3 border-b">Lot/Exp</th><th class="p-3 border-b text-right text-blue-700">รับ</th><th class="p-3 border-b text-right text-orange-700">จ่าย</th><th class="p-3 border-b text-right font-bold">คงเหลือ</th><th class="p-3 border-b">หมายเหตุ (จาก/ไป)</th></tr>
+                </thead>
+                <tbody id="vcTableBody">
+                  <tr><td colspan="7" class="text-center p-10 text-slate-400">👆 กรุณาเลือกรายการยา และกดปุ่ม "ค้นหาประวัติ" ด้านบน</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
         <div id="view-receive" class="view-section hidden">
@@ -670,7 +784,7 @@
     let filteredHistoryIn = [], filteredHistoryOut = []; 
     let tsInventoryList = []; 
     let bulkReceiveItems = []; 
-    let obItems = []; // Array สำหรับเก็บรายการยอดยกมา
+    let obItems = []; 
     let invReportData = []; 
     let vcRawData = null; 
     let autoReqData = [];
@@ -701,7 +815,6 @@
       return String(val); 
     }
 
-    // Export Excel อัปเดตเพื่อรองรับ Input แบบแพ็ค
     function exportToExcel(tableId, filename) {
         let csv = []; 
         let rows = document.querySelectorAll(`#${tableId} tr`);
@@ -710,7 +823,7 @@
             let cols = rows[i].querySelectorAll("td, th");
             for (let j = 0; j < cols.length; j++) {
                 if (cols[j].classList.contains('no-print')) continue;
-                if (cols[j].classList.contains('print-only-display')) continue; // ข้ามช่องปรินต์เฉพาะ
+                if (cols[j].classList.contains('print-only-display')) continue; 
                 
                 let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " ").replace(/"/g, '""');
                 let input = cols[j].querySelector('input');
@@ -848,7 +961,7 @@
         if(elementId === 'filter_out_drug') tsInstance = tomSelectFilterOut; 
         if(elementId === 'vc_drug') tsInstance = tomSelectVc; 
         if(elementId === 'ts_drug') tsInstance = tomSelectTs;
-        if(elementId === 'ob_drug') tsInstance = tomSelectOb; // สำหรับเมนูยอดยกมา
+        if(elementId === 'ob_drug') tsInstance = tomSelectOb; 
         
         if(tsInstance !== null) { tsInstance.destroy(); }
         if(elementId.includes('filter') || elementId === 'vc_drug') { select.innerHTML = '<option value="">-- เลือกรายการยา --</option>'; } else { select.innerHTML = '<option value="">-- พิมพ์ค้นหายา --</option>'; }
@@ -899,8 +1012,7 @@
                 document.getElementById('ob_unit_price').value = d.Unit_Price;
                 
                 if(qtyPack) {
-                    let totalBase = Number(d.Pack_Size) * Number(qtyPack);
-                    let totalPrice = totalBase * Number(d.Unit_Price);
+                    let totalPrice = Number(qtyPack) * Number(d.Unit_Price);
                     document.getElementById('ob_total_price').value = totalPrice.toLocaleString('th-TH', {minimumFractionDigits: 2});
                 }
             }
@@ -931,7 +1043,6 @@
 
         renderObTable();
         
-        // Clear Form
         document.getElementById('ob_qty_pack').value = '';
         document.getElementById('ob_lot').value = '';
         if(document.getElementById('ob_exp')._flatpickr) document.getElementById('ob_exp')._flatpickr.clear();
@@ -977,13 +1088,13 @@
         const payload = {
             header: {
                 date: document.getElementById('ob_date').value,
-                reqType: 'ยอดยกมา', // ให้ Backend รู้ว่าเป็นยอดยกมา
+                reqType: 'ยอดยกมา', 
                 reqNo: document.getElementById('ob_ref_no').value || 'ยอดยกมาต้นปี',
                 userId: currentUser.id,
                 department: dept,
                 source: 'ยอดยกมาตั้งต้น'
             },
-            items: obItems // ส่ง format เดียวกับรับยาเข้า
+            items: obItems 
         };
 
         const btn = document.getElementById('btnSubmitOb');
@@ -1129,12 +1240,18 @@
     // =========================================================
     function loadAutoRequisition() {
         let dept = getCurrentDept();
-        if(dept === 'ALL') return alert("กรุณาเลือกคลัง (OPD/IPD) ที่ต้องการสร้างใบเบิกด้านบนก่อนครับ");
+        if(dept === 'ALL') {
+            document.getElementById('reqTableBody').innerHTML = '<tr><td colspan="8" class="text-center p-10 text-amber-600 font-bold">⚠️ กรุณาเลือกคลัง (OPD/IPD) ที่แถบด้านบนก่อนสร้างใบเบิก</td></tr>';
+            return;
+        }
         document.getElementById('auto_req_dept_display').innerText = dept;
         document.getElementById('reqTableBody').innerHTML = '<tr><td colspan="8" class="text-center p-10"><div class="loader"></div> กำลังสแกนคลังยา...</td></tr>';
         
         callAPI('getInventoryReport', {department: dept}).then(data => {
-            if(data.error) return alert("Error: " + data.message);
+            if(data.error) {
+                document.getElementById('reqTableBody').innerHTML = `<tr><td colspan="8" class="text-center p-10 text-red-500">Error: ${data.message}</td></tr>`;
+                return;
+            }
             autoReqData = [];
             data.forEach(d => {
                 let maxPacks = Number(d.Max); 
@@ -1144,11 +1261,10 @@
                 
                 if (maxPacks > 0 && packSize > 0) {
                     let maxBase = maxPacks * packSize;
-                    
                     if (balBase < maxBase) {
                         let currentPacks = balBase / packSize; 
                         let suggestPacks = maxPacks - Math.floor(currentPacks); 
-                        
+                        if (suggestPacks === 0 && balBase <= (minPacks * packSize)) { suggestPacks = 1; }
                         if (suggestPacks > 0) {
                             autoReqData.push({ ...d, SuggestPacks: suggestPacks, ReqQty: suggestPacks });
                         }
@@ -1158,7 +1274,7 @@
             autoReqData.sort((a, b) => a.Balance - b.Balance); 
             renderAutoRequisition();
         }).catch(err => {
-            document.getElementById('reqTableBody').innerHTML = '<tr><td colspan="8" class="text-center p-10 text-red-500">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
+            document.getElementById('reqTableBody').innerHTML = `<tr><td colspan="8" class="text-center p-10 text-red-500">เกิดข้อผิดพลาดในการโหลดข้อมูล: ${err.message}</td></tr>`;
         });
     }
 
@@ -1202,7 +1318,10 @@
         if(row) { row.querySelector('.print-only-display').innerText = `${val} x ${autoReqData[index].Pack_Size}`; }
     }
     
-    function removeReqItem(index) { autoReqData.splice(index, 1); renderAutoRequisition(); }
+    function removeReqItem(index) { 
+        autoReqData.splice(index, 1); 
+        renderAutoRequisition(); 
+    }
 
     function printRequisition() {
         if(autoReqData.length === 0) return alert("ไม่มีรายการขอเบิก");
@@ -1220,10 +1339,15 @@
     let invSortCol = ''; let invSortAsc = true;
     function loadInventoryReport() { 
         const tb = document.getElementById('invTableBody'); 
-        tb.innerHTML = '<tr><td colspan="6" class="text-center p-10"><div class="loader"></div> กำลังคำนวณ...</td></tr>'; 
+        tb.innerHTML = '<tr><td colspan="6" class="text-center p-10"><div class="loader"></div> กำลังดึงข้อมูล...</td></tr>'; 
         callAPI('getInventoryReport', {department: getCurrentDept()}).then(data => { 
-            if(data.error) return alert("Error: " + data.message); 
+            if(data.error) {
+                tb.innerHTML = `<tr><td colspan="6" class="text-center p-10 text-red-500">Error: ${data.message}</td></tr>`;
+                return;
+            }
             invReportData = data; renderInventoryReport(); 
+        }).catch(err => {
+            tb.innerHTML = `<tr><td colspan="6" class="text-center p-10 text-red-500">เกิดข้อผิดพลาด: ${err.message}</td></tr>`;
         }); 
     }
     
